@@ -52,5 +52,6 @@ public class ActivityControllerImplTest {
         verify(activityRepository).save(activity);
         verify(activityRepository).save(any(Activity.class));
         verify(activityRepository, times(1)).save(any(Activity.class));
+        assertThat(result).isEqualTo(id);
     }
 }

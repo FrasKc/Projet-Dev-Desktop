@@ -10,6 +10,7 @@ public class ActivityControllerImpl implements IActivityController {
 
     @Override
     public String saveActivity(Activity activity) {
+        activity.setLoad(calculateLoad(activity.getDuration(), activity.getRpe()));
         return this.activityRepository.save(activity);
     }
 
@@ -17,4 +18,7 @@ public class ActivityControllerImpl implements IActivityController {
         double durationInMinutes = duration/60.0;
         return durationInMinutes * rpe;
     }
+
+
+
 }
