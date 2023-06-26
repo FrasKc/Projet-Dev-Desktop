@@ -8,7 +8,7 @@ import lombok.Data;
 public class WeekTraningLoad {
     private double load;
     private double monotony;
-    private int constrait;
+    private int constraint;
     private int fitness;
     private double acwr;
 

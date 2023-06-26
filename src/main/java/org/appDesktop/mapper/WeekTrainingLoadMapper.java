@@ -9,7 +9,7 @@ public class WeekTrainingLoadMapper {
         Document document = new Document()
                 .append("load", weekTraningLoad.getLoad())
                 .append("monotony", weekTraningLoad.getMonotony())
-                .append("constrainte", weekTraningLoad.getConstrait())
+                .append("constraint", weekTraningLoad.getConstraint())
                 .append("fitness", weekTraningLoad.getFitness())
                 .append("acwr", weekTraningLoad.getAcwr());
         return document;
