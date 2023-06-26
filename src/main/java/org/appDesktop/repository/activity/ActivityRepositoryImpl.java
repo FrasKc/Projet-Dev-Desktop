@@ -16,7 +16,8 @@ public class ActivityRepositoryImpl implements IActivityRepository {
         this.collection = collection;
     }
     @Override
-    public InsertOneResult save(Activity activity) {
-        return this.collection.insertOne(activityToDocument(activity));
+    public String save(Activity activity) {
+        InsertOneResult result = this.collection.insertOne(activityToDocument(activity));
+        return result.getInsertedId().toString();
     }
 }

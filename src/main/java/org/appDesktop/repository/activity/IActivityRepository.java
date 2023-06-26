@@ -5,5 +5,5 @@ import org.appDesktop.model.Activity;
 
 public interface IActivityRepository {
 
-    InsertOneResult save(Activity activity);
+    String save(Activity activity);
 }
