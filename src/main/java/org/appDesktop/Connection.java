@@ -22,7 +22,7 @@ public class Connection {
         try (InputStream input = Connection.class.getClassLoader().getResourceAsStream("database.properties")) {
             Properties prop = new Properties();
             if (input == null) {
-                System.out.println("Sorry, unable to find config.properties");
+                System.out.println("Sorry, unable to find database.properties");
                 return;
             }
             //load a properties file from class path, inside static method
