@@ -1,0 +1,1 @@
+database.url = mongodb+srv://application-desktop:<password>@<cluster>.<key>.mongodb.net/?retryWrites=true&w=majority

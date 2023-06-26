@@ -9,14 +9,32 @@ import org.appDesktop.model.Activity;
 import org.appDesktop.repository.SportRepositoryImpl;
 import org.bson.Document;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Date;
 import java.time.Instant;
+import java.util.Properties;
 
 @Slf4j
 public class Connection {
     public static void main(String[] args){
-        String connectionString= "mongodb+srv://application-desktop:application-desktop@clusterappdesktop.zxprq4a.mongodb.net/?retryWrites=true&w=majority";
-        try (MongoClient mongoClient = MongoClients.create(connectionString)){
+        String connectionString = "";
+        try (InputStream input = Connection.class.getClassLoader().getResourceAsStream("database.properties")) {
+            Properties prop = new Properties();
+            if (input == null) {
+                System.out.println("Sorry, unable to find config.properties");
+                return;
+            }
+            //load a properties file from class path, inside static method
+            prop.load(input);
+            connectionString = prop.getProperty("database.url");
+            //get the property value and print it out
+            System.out.println(prop.getProperty("database.url"));
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+       try (MongoClient mongoClient = MongoClients.create(connectionString)){
             log.info("Database connection successful");
             MongoDatabase database = mongoClient.getDatabase("AppDesktopDB");
             MongoCollection<Document> activityCollection = database.getCollection("activty");
