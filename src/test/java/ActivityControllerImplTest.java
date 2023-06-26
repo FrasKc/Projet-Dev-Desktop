@@ -30,12 +30,27 @@ public class ActivityControllerImplTest {
             5
     );
 
-    Activity badActivity = new Activity(
+    Activity badActivityDurationNegative = new Activity(
             "MMA",
             Date.from(Instant.parse("1995-12-25T19:00:30.00Z")),
             -330,
             5
     );
+
+    Activity badActivityRpeNegative = new Activity(
+            "MMA",
+            Date.from(Instant.parse("1995-12-25T19:00:30.00Z")),
+            330,
+            -5
+    );
+
+    Activity badActivityRpeBiggerThanTen = new Activity(
+            "MMA",
+            Date.from(Instant.parse("1995-12-25T19:00:30.00Z")),
+            330,
+            15
+    );
+
     String id = "idActivity";
 
     @BeforeEach
@@ -51,8 +66,13 @@ public class ActivityControllerImplTest {
 
     @Test
     public void verif_activity_value() {
-        boolean result = classUnderTest.verifActivityValue(badActivity);
-        assertThat(result).isEqualTo(false);
+        boolean resultDurationNegative = classUnderTest.verifActivityValue(badActivityDurationNegative);
+        boolean resultRpeNegative = classUnderTest.verifActivityValue(badActivityRpeNegative);
+        boolean resultRpeBiggerThanTen = classUnderTest.verifActivityValue(badActivityRpeBiggerThanTen);
+
+        assertThat(resultDurationNegative).isEqualTo(false);
+        assertThat(resultRpeNegative).isEqualTo(false);
+        assertThat(resultRpeBiggerThanTen).isEqualTo(false);
     }
 
     @Test

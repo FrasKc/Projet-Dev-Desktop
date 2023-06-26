@@ -16,7 +16,6 @@ public class ActivityControllerImpl implements IActivityController {
         }else{
             throw new Exception("Bad activity");
         }
-
     }
 
     public double calculateLoad(int duration, int rpe) {
@@ -30,5 +29,4 @@ public class ActivityControllerImpl implements IActivityController {
         }
         return true;
     }
-
 }
