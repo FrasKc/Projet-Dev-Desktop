@@ -1,4 +1,4 @@
-package org.example.model;
+package org.appDesktop.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Data
 @AllArgsConstructor
-public class activity {
+public class Activity {
     private String name;
     private Date date;
     private int duration;

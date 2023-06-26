@@ -1,4 +1,4 @@
-package org.example.model;
+package org.appDesktop.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Data
 @AllArgsConstructor
-public class user {
+public class User {
     private String firstname;
     private String lastname;
     private Date birthDate;
