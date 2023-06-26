@@ -13,4 +13,11 @@ public class Activity {
     private int duration;
     private int rpe;
     private double load;
+
+    public Activity(String name, Date date, int duration, int rpe) {
+        this.name = name;
+        this.date = date;
+        this.duration = duration;
+        this.rpe = rpe;
+    }
 }
