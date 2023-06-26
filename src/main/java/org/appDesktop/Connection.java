@@ -7,6 +7,8 @@ import com.mongodb.client.MongoDatabase;
 import lombok.extern.slf4j.Slf4j;
 import org.appDesktop.model.Activity;
 import org.appDesktop.model.User;
+import org.appDesktop.model.WeekTraningLoad;
+import org.appDesktop.repository.weekTrainingLoad.WeekTrainingLoadRepositoryImpl;
 import org.appDesktop.repository.activity.ActivityRepositoryImpl;
 import org.appDesktop.repository.user.UserRepositoryImpl;
 import org.bson.Document;
@@ -39,6 +41,7 @@ public class Connection {
             MongoDatabase database = mongoClient.getDatabase("AppDesktopDB");
             MongoCollection<Document> activityCollection = database.getCollection("activity");
             MongoCollection<Document> userCollection = database.getCollection("user");
+            MongoCollection<Document> weeklyTrainingLoadCollection = database.getCollection("weeklyTrainingLoad");
 
             ActivityRepositoryImpl activityRepository = new ActivityRepositoryImpl(activityCollection);
             Activity activity = new Activity(
@@ -58,6 +61,16 @@ public class Connection {
                    "male"
            );
            log.info("User saved {}", userRepository.save(user));
+
+            WeekTrainingLoadRepositoryImpl weekTrainingLoadRepository = new WeekTrainingLoadRepositoryImpl(weeklyTrainingLoadCollection);
+            WeekTraningLoad weekTraningLoad = new WeekTraningLoad(
+                    20.4,
+                    30.8,
+                    10,
+                    50,
+                    190.9
+            );
+            log.info("WeeklyTrainingLoad saved {}", weekTrainingLoadRepository.save(weekTraningLoad));
         } catch (Exception e) {
             log.error("An error occurred during connection ==> {}", e);
         }
