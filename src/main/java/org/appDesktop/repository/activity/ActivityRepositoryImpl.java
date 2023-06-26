@@ -1,4 +1,4 @@
-package org.appDesktop.repository;
+package org.appDesktop.repository.activity;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.InsertOneResult;
@@ -9,10 +9,10 @@ import org.appDesktop.model.Activity;
 
 import static org.appDesktop.mapper.ActivityMapper.activityToDocument;
 
-public class SportRepositoryImpl implements  ISportRepository {
+public class ActivityRepositoryImpl implements IActivityRepository {
     MongoCollection<Document> collection;
 
-    public SportRepositoryImpl(MongoCollection<Document> collection){
+    public ActivityRepositoryImpl(MongoCollection<Document> collection){
         this.collection = collection;
     }
     @Override

@@ -6,7 +6,9 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import lombok.extern.slf4j.Slf4j;
 import org.appDesktop.model.Activity;
-import org.appDesktop.repository.SportRepositoryImpl;
+import org.appDesktop.model.User;
+import org.appDesktop.repository.activity.ActivityRepositoryImpl;
+import org.appDesktop.repository.user.UserRepositoryImpl;
 import org.bson.Document;
 
 import java.io.IOException;
@@ -19,33 +21,43 @@ import java.util.Properties;
 public class Connection {
     public static void main(String[] args){
         String connectionString = "";
+
         try (InputStream input = Connection.class.getClassLoader().getResourceAsStream("database.properties")) {
             Properties prop = new Properties();
             if (input == null) {
-                System.out.println("Sorry, unable to find database.properties");
+                log.error("Sorry, unable to find database.properties");
                 return;
             }
-            //load a properties file from class path, inside static method
             prop.load(input);
             connectionString = prop.getProperty("database.url");
-            //get the property value and print it out
-            System.out.println(prop.getProperty("database.url"));
-
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-       try (MongoClient mongoClient = MongoClients.create(connectionString)){
+
+        try (MongoClient mongoClient = MongoClients.create(connectionString)){
             log.info("Database connection successful");
             MongoDatabase database = mongoClient.getDatabase("AppDesktopDB");
-            MongoCollection<Document> activityCollection = database.getCollection("activty");
-            SportRepositoryImpl activityRepository = new SportRepositoryImpl(activityCollection);
+            MongoCollection<Document> activityCollection = database.getCollection("activity");
+            MongoCollection<Document> userCollection = database.getCollection("user");
+
+            ActivityRepositoryImpl activityRepository = new ActivityRepositoryImpl(activityCollection);
             Activity activity = new Activity(
-                    "MMA", Date.from(Instant.now()),
+                    "MMA",
+                    Date.from(Instant.now()),
                     300,
                     5,
                     3000
             );
-            log.info("Book saved {}", activityRepository.save(activity));
+            log.info("Activity saved {}", activityRepository.save(activity));
+
+           UserRepositoryImpl userRepository = new UserRepositoryImpl(userCollection);
+           User user = new User(
+                   "John",
+                   "Doe",
+                   Date.from(Instant.parse("1995-12-25T19:00:30.00Z")),
+                   "male"
+           );
+           log.info("User saved {}", userRepository.save(user));
         } catch (Exception e) {
             log.error("An error occurred during connection ==> {}", e);
         }
