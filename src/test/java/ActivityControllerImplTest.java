@@ -59,12 +59,14 @@ public class ActivityControllerImplTest {
     }
 
     @Test
+    @DisplayName("Calculate Laod test")
     public void calculate_load() {
         double load = classUnderTest.calculateLoad(activity.getDuration(), activity.getRpe());
         assertThat(load).isEqualTo(27.50);
     }
 
     @Test
+    @DisplayName("Varif Activity test")
     public void verif_activity_value() {
         boolean resultDurationNegative = classUnderTest.verifActivityValue(badActivityDurationNegative);
         boolean resultRpeNegative = classUnderTest.verifActivityValue(badActivityRpeNegative);
@@ -76,6 +78,7 @@ public class ActivityControllerImplTest {
     }
 
     @Test
+    @DisplayName("Save With Activity should call repo test")
     public void save_withActivity_shouldCallRepository() throws Exception {
         //Given
         when(activityRepository.save(activity)).thenReturn(id);
