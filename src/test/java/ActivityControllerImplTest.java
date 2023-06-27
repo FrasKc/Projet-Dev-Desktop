@@ -79,13 +79,9 @@ public class ActivityControllerImplTest {
     public void save_withActivity_shouldCallRepository() throws Exception {
         //Given
         when(activityRepository.save(activity)).thenReturn(id);
+
         //When
-        String result = "";
-        try {
-            result = classUnderTest.saveActivity(activity);
-        } catch (Exception e) {
-            log.error(e.toString());
-        }
+        String result = classUnderTest.saveActivity(activity);
 
         //Then
         verify(activityRepository).save(activity);
