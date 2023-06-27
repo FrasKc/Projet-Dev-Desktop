@@ -3,6 +3,7 @@ package org.appDesktop.controller.activity;
 import lombok.AllArgsConstructor;
 import org.appDesktop.model.Activity;
 import org.appDesktop.repository.activity.IActivityRepository;
+import org.appDesktop.service.DateService;
 import org.appDesktop.service.PropertiesReader;
 
 import java.time.DayOfWeek;
@@ -10,15 +11,19 @@ import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
+import static org.appDesktop.service.DateService.getFirstDayOfTheWeek;
+import static org.appDesktop.service.DateService.getLastDayOfTheWeek;
+
 
 public class ActivityControllerImpl implements IActivityController {
     IActivityRepository activityRepository;
     String userId;
-
+    DateService dateService;
     public ActivityControllerImpl(IActivityRepository activityRepository){
         this.activityRepository = activityRepository;
         PropertiesReader propertiesReader = new PropertiesReader("user.properties");
         this.userId = propertiesReader.getProperty().getProperty("user.id");
+        dateService = new DateService();
     }
     @Override
     public String saveActivity(Activity activity) throws Exception {
@@ -44,8 +49,6 @@ public class ActivityControllerImpl implements IActivityController {
 
     @Override
     public List<Activity> getAllActivitiesOfTheWeek() {
-        LocalDate startDateOfWeek = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-        LocalDate endDateOfWeek = startDateOfWeek.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
-        return this.activityRepository.getAllActivitiesOfWeek(this.userId, startDateOfWeek, endDateOfWeek);
+        return this.activityRepository.getAllActivitiesOfWeek(this.userId, getFirstDayOfTheWeek(), getLastDayOfTheWeek());
     }
 }
