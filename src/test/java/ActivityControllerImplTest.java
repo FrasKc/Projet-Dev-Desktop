@@ -1,5 +1,5 @@
 import lombok.extern.slf4j.Slf4j;
-import org.appDesktop.controller.ActivityControllerImpl;
+import org.appDesktop.controller.activity.ActivityControllerImpl;
 import org.appDesktop.model.Activity;
 import org.appDesktop.repository.activity.ActivityRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +11,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.awt.desktop.AboutEvent;
 import java.sql.Date;
+import java.time.DayOfWeek;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
@@ -23,6 +28,8 @@ public class ActivityControllerImplTest {
     @Mock
     ActivityRepositoryImpl activityRepository;
     ActivityControllerImpl classUnderTest;
+    LocalDate startDateOfWeek = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+    LocalDate endDateOfWeek = startDateOfWeek.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
     Activity activity = new Activity(
             "MMA",
             Date.from(Instant.parse("1995-12-25T19:00:30.00Z")),
@@ -50,6 +57,8 @@ public class ActivityControllerImplTest {
             330,
             15
     );
+
+    List<Activity> listActivity = new ArrayList<Activity>();
 
     String id = "idActivity";
 
@@ -86,7 +95,18 @@ public class ActivityControllerImplTest {
         //Then
         verify(activityRepository).save(activity);
         verify(activityRepository).save(any(Activity.class));
+        verify(activityRepository, never()).getAllActivitiesOfWeek("649988ddefe3540f408a41c1", startDateOfWeek, endDateOfWeek);
         verify(activityRepository, times(1)).save(any(Activity.class));
         assertThat(result).isEqualTo(id);
+    }
+
+    @Test
+    public void get_all_activitie_of_week(){
+        when(activityRepository.getAllActivitiesOfWeek("649988ddefe3540f408a41c1", startDateOfWeek, endDateOfWeek)).thenReturn(listActivity);
+
+        List<Activity> result = classUnderTest.getAllActivitiesOfTheWeek();
+
+        verify(activityRepository).getAllActivitiesOfWeek("649988ddefe3540f408a41c1", startDateOfWeek, endDateOfWeek);
+        assertThat(result).isEqualTo(listActivity);
     }
 }

@@ -5,12 +5,14 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import lombok.extern.slf4j.Slf4j;
+import org.appDesktop.controller.user.UserControllerImpl;
 import org.appDesktop.model.Activity;
 import org.appDesktop.model.User;
 import org.appDesktop.model.WeekTraningLoad;
 import org.appDesktop.repository.weekTrainingLoad.WeekTrainingLoadRepositoryImpl;
 import org.appDesktop.repository.activity.ActivityRepositoryImpl;
 import org.appDesktop.repository.user.UserRepositoryImpl;
+import org.appDesktop.service.PropertiesReader;
 import org.bson.Document;
 
 import java.io.IOException;
@@ -22,19 +24,9 @@ import java.util.Properties;
 @Slf4j
 public class Connection {
     public static void main(String[] args){
-        String connectionString = "";
 
-        try (InputStream input = Connection.class.getClassLoader().getResourceAsStream("database.properties")) {
-            Properties prop = new Properties();
-            if (input == null) {
-                log.error("Sorry, unable to find database.properties");
-                return;
-            }
-            prop.load(input);
-            connectionString = prop.getProperty("database.url");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        PropertiesReader propertiesReader = new PropertiesReader("database.properties");
+        String connectionString = propertiesReader.getProperty().getProperty("database.url");
 
         try (MongoClient mongoClient = MongoClients.create(connectionString)){
             log.info("Database connection successful");
@@ -45,12 +37,15 @@ public class Connection {
 
             ActivityRepositoryImpl activityRepository = new ActivityRepositoryImpl(activityCollection);
             Activity activity = new Activity(
+                    "649988ddefe3540f408a41c1",
                     "MMA",
                     Date.from(Instant.now()),
                     300,
                     5,
                     3000
             );
+
+
             log.info("Activity saved {}", activityRepository.save(activity));
 
            UserRepositoryImpl userRepository = new UserRepositoryImpl(userCollection);
@@ -60,8 +55,8 @@ public class Connection {
                    Date.from(Instant.parse("1995-12-25T19:00:30.00Z")),
                    "male"
            );
-           log.info("User saved {}", userRepository.save(user));
-
+            UserControllerImpl userController = new UserControllerImpl(userRepository);
+            log.info("User saved {}", userController.saveUser(user));
             WeekTrainingLoadRepositoryImpl weekTrainingLoadRepository = new WeekTrainingLoadRepositoryImpl(weeklyTrainingLoadCollection);
             WeekTraningLoad weekTraningLoad = new WeekTraningLoad(
                     20.4,

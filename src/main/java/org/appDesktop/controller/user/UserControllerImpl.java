@@ -3,6 +3,7 @@ package org.appDesktop.controller.user;
 import lombok.AllArgsConstructor;
 import org.appDesktop.model.User;
 import org.appDesktop.repository.user.IUserRepository;
+import org.appDesktop.service.PropertieWriter;
 
 import java.sql.Date;
 import java.time.Instant;
@@ -12,7 +13,10 @@ public class UserControllerImpl implements IUserController {
     IUserRepository userRepository;
     public String saveUser(User user) throws Exception {
         if(verifyDateOfBirth(user)) {
-            return userRepository.save(user);
+            String userId =  userRepository.save(user);
+            PropertieWriter propertieWriter = new PropertieWriter();
+            propertieWriter.writeNewPropertie("user.properties", "user.id", userId);
+            return userId;
         } else {
             throw new Exception("The date of birth is in the future");
         }
