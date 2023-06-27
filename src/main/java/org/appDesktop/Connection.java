@@ -5,6 +5,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import lombok.extern.slf4j.Slf4j;
+import org.appDesktop.controller.user.UserControllerImpl;
 import org.appDesktop.model.Activity;
 import org.appDesktop.model.User;
 import org.appDesktop.model.WeekTraningLoad;
@@ -43,6 +44,8 @@ public class Connection {
                     5,
                     3000
             );
+
+
             log.info("Activity saved {}", activityRepository.save(activity));
 
            UserRepositoryImpl userRepository = new UserRepositoryImpl(userCollection);
@@ -52,8 +55,8 @@ public class Connection {
                    Date.from(Instant.parse("1995-12-25T19:00:30.00Z")),
                    "male"
            );
-           log.info("User saved {}", userRepository.save(user));
-
+            UserControllerImpl userController = new UserControllerImpl(userRepository);
+            log.info("User saved {}", userController.saveUser(user));
             WeekTrainingLoadRepositoryImpl weekTrainingLoadRepository = new WeekTrainingLoadRepositoryImpl(weeklyTrainingLoadCollection);
             WeekTraningLoad weekTraningLoad = new WeekTraningLoad(
                     20.4,
