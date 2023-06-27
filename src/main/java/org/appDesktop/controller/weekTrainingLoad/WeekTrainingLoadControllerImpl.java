@@ -1,16 +1,28 @@
 package org.appDesktop.controller.weekTrainingLoad;
 
-import com.mongodb.client.result.InsertOneResult;
-import org.appDesktop.model.Activity;
-import org.appDesktop.model.WeekTraningLoad;
-import org.appDesktop.repository.activity.IActivityRepository;
+import lombok.AllArgsConstructor;
+import org.appDesktop.model.WeekTrainingLoad;
 import org.appDesktop.repository.weekTrainingLoad.IWeekTrainingLoadRepository;
 
+import static org.appDesktop.service.DateService.getFirstDayOfTheWeek;
+import static org.appDesktop.service.DateService.getLastDayOfTheWeek;
+
+@AllArgsConstructor
 public class WeekTrainingLoadControllerImpl implements IWeekTrainingLoadController{
     IWeekTrainingLoadRepository weekTrainingLoadRepository;
     @Override
-    public InsertOneResult saveActivity(WeekTraningLoad weekTraningLoad) throws Exception {
+    public String saveWeekTrainingLoad(WeekTrainingLoad weekTraningLoad) {
         return weekTrainingLoadRepository.save(weekTraningLoad);
     }
 
+
+    @Override
+    public WeekTrainingLoad getWeekTrainingLoadOfTheCurrentWeek(){
+        return weekTrainingLoadRepository.getWeekTraningLoadOfTheWeek(getFirstDayOfTheWeek(), getLastDayOfTheWeek());
+    };
+
+    @Override
+    public void updateWeekTrainingLoad(WeekTrainingLoad weekTrainingLoad){
+        weekTrainingLoadRepository.updateWeekTrainingLoad(weekTrainingLoad);
+    }
 }

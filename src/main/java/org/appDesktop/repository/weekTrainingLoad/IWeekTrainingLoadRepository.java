@@ -1,11 +1,13 @@
 package org.appDesktop.repository.weekTrainingLoad;
 
-import com.mongodb.client.result.InsertOneResult;
-import org.appDesktop.model.Activity;
-import org.appDesktop.model.WeekTraningLoad;
+import org.appDesktop.model.WeekTrainingLoad;
 
-import static org.appDesktop.mapper.ActivityMapper.activityToDocument;
+import java.time.LocalDate;
 
 public interface IWeekTrainingLoadRepository {
-    InsertOneResult save(WeekTraningLoad weekTraningLoad);
+    String save(WeekTrainingLoad weekTraningLoad);
+
+    WeekTrainingLoad getWeekTraningLoadOfTheWeek(LocalDate firstDate, LocalDate lastDate);
+
+    void updateWeekTrainingLoad(WeekTrainingLoad updatedWeekTrainingLoad);
 }
