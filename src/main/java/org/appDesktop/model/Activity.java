@@ -8,6 +8,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 public class Activity {
+    private String userId;
     private String name;
     private Date date;
     private int duration;
