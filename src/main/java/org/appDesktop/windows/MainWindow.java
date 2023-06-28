@@ -1,16 +1,13 @@
 package org.appDesktop.windows;
 
-import org.appDesktop.activityForm.ActivityForm;
+import org.appDesktop.form.activityForm.ActivityForm;
 import org.appDesktop.model.Activity;
-import org.appDesktop.repository.activity.ActivityRepositoryImpl;
-import org.appDesktop.repository.activity.IActivityRepository;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
-import java.util.Date;
 
 public class MainWindow extends JFrame {
     ActivityForm form = new ActivityForm();

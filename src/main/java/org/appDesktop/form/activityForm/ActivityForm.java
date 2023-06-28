@@ -1,4 +1,4 @@
-package org.appDesktop.activityForm;
+package org.appDesktop.form.activityForm;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
