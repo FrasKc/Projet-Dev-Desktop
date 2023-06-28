@@ -18,6 +18,7 @@ import org.bson.Document;
 
 import java.sql.Date;
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Slf4j
 public class Connection {
