@@ -10,5 +10,5 @@ public interface IActivityController {
     double calculateLoad(int duration, int rpe);
     boolean verifActivityValue(Activity activity);
     List<Activity> getAllActivitiesOfTheWeek();
-    List<Activity> getAllLast28DayActivities(String userId, LocalDate startDay, LocalDate todayDate);
+    List<Activity> getAllLast28DayActivities();
 }

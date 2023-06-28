@@ -4,7 +4,7 @@ package org.appDesktop.mapper;
 import org.bson.Document;
 import org.appDesktop.model.Activity;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class ActivityMapper {
     public static Document activityToDocument(Activity activity) {
@@ -20,7 +20,7 @@ public class ActivityMapper {
         return new Activity(
                 (String) document.get("userId"),
                 (String) document.get("name"),
-                (Date) document.get("date"),
+                (LocalDate) document.get("date"),
                 (int) document.get("duration"),
                 (int) document.get("rpe"),
                 (double) document.get("load")

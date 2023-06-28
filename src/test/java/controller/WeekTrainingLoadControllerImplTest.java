@@ -12,15 +12,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.sql.Array;
+
 import java.sql.Date;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.List;
+
 
 import static org.appDesktop.service.DateService.getFirstDayOfTheWeek;
 import static org.appDesktop.service.DateService.getLastDayOfTheWeek;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.appDesktop.service.UserService.getUserId;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -51,7 +51,7 @@ public class WeekTrainingLoadControllerImplTest {
 
     String id = "idWeekTrainingLoad";
 
-    String userId = "00000000";
+    String userId = getUserId();
 
     @BeforeEach
     public void setUp() {
