@@ -5,6 +5,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import lombok.extern.slf4j.Slf4j;
+import org.appDesktop.controller.activity.ActivityControllerImpl;
 import org.appDesktop.controller.user.UserControllerImpl;
 import org.appDesktop.controller.weekTrainingLoad.WeekTrainingLoadControllerImpl;
 import org.appDesktop.model.Activity;
@@ -35,19 +36,19 @@ public class Connection {
             MongoCollection<Document> weeklyTrainingLoadCollection = database.getCollection("weeklyTrainingLoad");
 
             ActivityRepositoryImpl activityRepository = new ActivityRepositoryImpl(activityCollection);
+            ActivityControllerImpl activityController = new ActivityControllerImpl(activityRepository);
             Activity activity = new Activity(
                     "649988ddefe3540f408a41c1",
-                    "MMA",
+                    "Foot",
                     LocalDate.now(),
                     300,
-                    5,
-                    3000
+                    5
             );
 
 
-            log.info("Activity saved {}", activityRepository.save(activity));
-
-           UserRepositoryImpl userRepository = new UserRepositoryImpl(userCollection);
+            String id = activityController.saveActivity(activity);
+            log.info("Activity saved {}", id);
+            UserRepositoryImpl userRepository = new UserRepositoryImpl(userCollection);
            User user = new User(
                    "John",
                    "Doe",

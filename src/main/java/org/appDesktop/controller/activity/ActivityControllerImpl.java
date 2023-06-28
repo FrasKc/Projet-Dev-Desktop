@@ -13,19 +13,48 @@ public class ActivityControllerImpl implements IActivityController {
     IActivityRepository activityRepository;
     String userId;
 
-    public ActivityControllerImpl(IActivityRepository activityRepository){
+    public ActivityControllerImpl(IActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
         this.userId = getUserId();
     }
+
     @Override
     public String saveActivity(Activity activity) throws Exception {
-        if (verifActivityValue(activity)){
+        if (verifActivityValue(activity)) {
             activity.setLoad(calculateLoad(activity.getDuration(), activity.getRpe()));
             return this.activityRepository.save(activity);
-        }else{
+        } else {
             throw new Exception("Bad activity");
         }
     }
+
+    @Override
+    public void deleteActivity(String id) throws Exception {
+        if (id != null) {
+            this.activityRepository.delete(id);
+        } else {
+            throw new Exception("Activity not found");
+        }
+    }
+
+    @Override
+    public void updateActivity(String activityId, Activity updatedActivity) throws Exception {
+        Activity existingActivity = this.activityRepository.findById(activityId);
+
+        if (existingActivity == null) {
+            throw new Exception("Activity not found");
+        }
+
+        // Perform any necessary updates on the existing activity
+        existingActivity.setName(updatedActivity.getName());
+        existingActivity.setDuration(updatedActivity.getDuration());
+        existingActivity.setRpe(updatedActivity.getRpe());
+
+        // Save the updated activity
+        this.activityRepository.update(activityId, existingActivity);
+    }
+
+
     @Override
     public double calculateLoad(int duration, int rpe) {
         double durationInMinutes = duration/60.0;

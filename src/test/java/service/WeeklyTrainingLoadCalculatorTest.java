@@ -28,6 +28,7 @@ public class WeeklyTrainingLoadCalculatorTest {
     WeeklyTrainingLoadCalculator classUnderTest;
 
     Activity activityOne = new Activity(
+            "1",
             "userId",
             "MMA",
             LocalDate.now(),
@@ -37,6 +38,7 @@ public class WeeklyTrainingLoadCalculatorTest {
     );
 
     Activity activityTwo = new Activity(
+            "2",
             "userId",
             "Rugby",
             LocalDate.now(),
@@ -46,6 +48,7 @@ public class WeeklyTrainingLoadCalculatorTest {
     );
 
     Activity activityThree = new Activity(
+            "3",
             "userId",
             "Salle de sport",
             LocalDate.now(),

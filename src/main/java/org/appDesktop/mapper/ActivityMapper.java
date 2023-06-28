@@ -18,6 +18,7 @@ public class ActivityMapper {
     }
     public static Activity documentToActivity(Document document) {
         return new Activity(
+                (String) document.get("_id"),
                 (String) document.get("userId"),
                 (String) document.get("name"),
                 (LocalDate) document.get("date"),
