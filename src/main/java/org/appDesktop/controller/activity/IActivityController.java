@@ -7,6 +7,11 @@ import java.util.List;
 
 public interface IActivityController {
     String saveActivity(Activity activity) throws Exception;
+
+    void deleteActivity(String id) throws Exception;
+
+    void updateActivity(String activityId, Activity activityUpdated) throws Exception;
+
     double calculateLoad(int duration, int rpe);
     boolean verifActivityValue(Activity activity);
     List<Activity> getAllActivitiesOfTheWeek();

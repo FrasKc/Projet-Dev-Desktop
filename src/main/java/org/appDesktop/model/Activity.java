@@ -9,6 +9,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 public class Activity {
+    private String _id;
     private String userId;
     private String name;
     private LocalDate date;
@@ -17,6 +18,14 @@ public class Activity {
     private double load;
 
     public Activity(String name, LocalDate date, int duration, int rpe) {
+        this.name = name;
+        this.date = date;
+        this.duration = duration;
+        this.rpe = rpe;
+    }
+
+    public Activity(String userId,String name, LocalDate date, int duration, int rpe) {
+        this.userId = userId;
         this.name = name;
         this.date = date;
         this.duration = duration;

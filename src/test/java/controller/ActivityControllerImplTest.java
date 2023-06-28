@@ -3,7 +3,9 @@ package controller;
 import lombok.extern.slf4j.Slf4j;
 import org.appDesktop.controller.activity.ActivityControllerImpl;
 import org.appDesktop.model.Activity;
+import org.appDesktop.model.WeekTrainingLoad;
 import org.appDesktop.repository.activity.ActivityRepositoryImpl;
+import org.assertj.core.api.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @Slf4j
@@ -121,4 +125,5 @@ public class ActivityControllerImplTest {
         verify(activityRepository).getAllLast28DayActivities(userId, startDateOfWeek, endDateOfWeek);
         assertThat(result).isEqualTo(listActivity);
     }
+
 }

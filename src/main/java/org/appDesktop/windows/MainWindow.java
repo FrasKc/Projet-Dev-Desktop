@@ -20,6 +20,7 @@ public class MainWindow extends JFrame {
         setLocationRelativeTo(null);
 
         JPanel rootPane = form.getRootPane();
+        System.out.println(rootPane);
 
         //On créé le container (ou JPannel)
         Container cp = this.getContentPane();

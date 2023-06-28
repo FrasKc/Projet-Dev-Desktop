@@ -10,7 +10,13 @@ public interface IActivityRepository {
 
     String save(Activity activity);
 
+    void delete(String activityId);
+
+    Activity findById(String activityId);
+
     List<Activity> getAllActivitiesOfWeek(String userId, LocalDate startDateWeek, LocalDate endDateWeek);
 
     List<Activity> getAllLast28DayActivities(String userId, LocalDate startDay, LocalDate todayDate);
+
+    Activity update(String activityId, Activity updatedActivity);
 }

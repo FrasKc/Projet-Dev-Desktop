@@ -92,6 +92,7 @@ public class ActivityForm {
         mois.setEditor(editor);
         annee.setModel(new SpinnerNumberModel(currentYear, 1900, currentYear, 1));
         annee.setEditor(new JSpinner.NumberEditor(annee, "#"));
+        adjustDaySpinner();
         rpeSlider.setMinimum(0);
         rpeSlider.setMaximum(10);
         rpeSlider.setValue(0);
