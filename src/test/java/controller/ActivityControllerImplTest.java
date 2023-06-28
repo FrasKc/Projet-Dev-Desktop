@@ -1,3 +1,5 @@
+package controller;
+
 import lombok.extern.slf4j.Slf4j;
 import org.appDesktop.controller.activity.ActivityControllerImpl;
 import org.appDesktop.model.Activity;

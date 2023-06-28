@@ -6,20 +6,18 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import lombok.extern.slf4j.Slf4j;
 import org.appDesktop.controller.user.UserControllerImpl;
+import org.appDesktop.controller.weekTrainingLoad.WeekTrainingLoadControllerImpl;
 import org.appDesktop.model.Activity;
 import org.appDesktop.model.User;
-import org.appDesktop.model.WeekTraningLoad;
+import org.appDesktop.model.WeekTrainingLoad;
 import org.appDesktop.repository.weekTrainingLoad.WeekTrainingLoadRepositoryImpl;
 import org.appDesktop.repository.activity.ActivityRepositoryImpl;
 import org.appDesktop.repository.user.UserRepositoryImpl;
 import org.appDesktop.service.PropertiesReader;
 import org.bson.Document;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Date;
 import java.time.Instant;
-import java.util.Properties;
 
 @Slf4j
 public class Connection {
@@ -58,14 +56,17 @@ public class Connection {
             UserControllerImpl userController = new UserControllerImpl(userRepository);
             log.info("User saved {}", userController.saveUser(user));
             WeekTrainingLoadRepositoryImpl weekTrainingLoadRepository = new WeekTrainingLoadRepositoryImpl(weeklyTrainingLoadCollection);
-            WeekTraningLoad weekTraningLoad = new WeekTraningLoad(
-                    20.4,
-                    30.8,
-                    10,
-                    50,
-                    190.9
+            WeekTrainingLoadControllerImpl weekTrainingLoadController = new WeekTrainingLoadControllerImpl(weekTrainingLoadRepository);
+            WeekTrainingLoad weekTraningLoad = new WeekTrainingLoad(
+                    1222,
+                    20,
+                    12,
+                    12,
+                    2,
+                    Date.from(Instant.now())
+
             );
-            log.info("WeeklyTrainingLoad saved {}", weekTrainingLoadRepository.save(weekTraningLoad));
+            log.info("WeeklyTrainingLoad saved {}", weekTrainingLoadController.saveWeekTrainingLoad(weekTraningLoad));
         } catch (Exception e) {
             log.error("An error occurred during connection ==> {}", e);
         }

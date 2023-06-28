@@ -1,9 +1,14 @@
 package org.appDesktop.controller.weekTrainingLoad;
 
-import com.mongodb.client.result.InsertOneResult;
-import org.appDesktop.model.Activity;
-import org.appDesktop.model.WeekTraningLoad;
+import org.appDesktop.model.WeekTrainingLoad;
+
+import java.time.LocalDate;
 
 public interface IWeekTrainingLoadController {
-    public InsertOneResult saveActivity(WeekTraningLoad weekTraningLoad) throws Exception;
+
+    String saveWeekTrainingLoad(WeekTrainingLoad weekTraningLoad);
+
+    WeekTrainingLoad getWeekTrainingLoadOfTheCurrentWeek();
+
+    void updateWeekTrainingLoad(WeekTrainingLoad weekTrainingLoad);
 }
