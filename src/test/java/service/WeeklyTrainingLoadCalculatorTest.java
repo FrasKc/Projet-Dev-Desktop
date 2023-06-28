@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Date;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +30,7 @@ public class WeeklyTrainingLoadCalculatorTest {
     Activity activityOne = new Activity(
             "userId",
             "MMA",
-            Date.from(Instant.now()),
+            LocalDate.now(),
             300,
             8,
             (300/60.0)*8
@@ -38,7 +39,7 @@ public class WeeklyTrainingLoadCalculatorTest {
     Activity activityTwo = new Activity(
             "userId",
             "Rugby",
-            Date.from(Instant.now()),
+            LocalDate.now(),
             360,
             6,
             (360/60.0)*6
@@ -47,7 +48,7 @@ public class WeeklyTrainingLoadCalculatorTest {
     Activity activityThree = new Activity(
             "userId",
             "Salle de sport",
-            Date.from(Instant.now()),
+            LocalDate.now(),
             360,
             7,
             (360/60.0)*7
