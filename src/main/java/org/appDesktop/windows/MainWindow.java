@@ -1,13 +1,20 @@
 package org.appDesktop.windows;
 
 import org.appDesktop.activityForm.ActivityForm;
+import org.appDesktop.controller.ActivityControllerImpl;
+import org.appDesktop.model.Activity;
+import org.appDesktop.repository.activity.ActivityRepositoryImpl;
+import org.appDesktop.repository.activity.IActivityRepository;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
+import java.util.Date;
 
 public class MainWindow extends JFrame {
+    ActivityForm form = new ActivityForm();
     public MainWindow() {
         super("Une fenêtre");
 
@@ -16,7 +23,6 @@ public class MainWindow extends JFrame {
         // Centre une fenetre
         setLocationRelativeTo(null);
 
-        ActivityForm form = new ActivityForm();
         JPanel rootPane = form.getRootPane();
 
         //On créé le container (ou JPannel)
@@ -38,7 +44,16 @@ public class MainWindow extends JFrame {
         public void actionPerformed(ActionEvent e) {
             String commande = e.getActionCommand();
             if (commande.equals("ajouterButton")) {
-                System.out.println("Save");
+                String nameField = form.getName().getText();
+                int durationField = (Integer) form.getDuration().getValue();
+                int rpe = form.getRpeSlider().getValue();
+                int year = (Integer) form.getAnnee().getValue();
+                int month = (Integer) form.getMois().getValue();
+                int day = (Integer) form.getJour().getValue();
+                form.formatDate(day,month,year);
+                LocalDate date = form.getDate();
+                Activity activity = new Activity(nameField, date, durationField, rpe);
+
             }
             else if (commande.equals("retourButton")) {
                 // action liée au bouton cancel

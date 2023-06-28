@@ -37,7 +37,7 @@ public class Connection {
             Activity activity = new Activity(
                     "649988ddefe3540f408a41c1",
                     "MMA",
-                    Date.from(Instant.now()),
+                    LocalDate.now(),
                     300,
                     5,
                     3000
