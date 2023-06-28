@@ -11,8 +11,9 @@ public class WeeklyTrainingLoadCalculator {
 
     private double averageDailyLoad;
 
-    public WeeklyTrainingLoadCalculator(List<Activity> activitiesList) {
+    public WeeklyTrainingLoadCalculator(List<Activity> activitiesList, List<WeekTrainingLoad> weeklyTrainingLoadList) {
         this.activitiesList = activitiesList;
+        this.weeklyTrainingLoadList = weeklyTrainingLoadList;
 
         averageDailyLoad = sumOfDailyLoads() / 7;
     }
@@ -46,5 +47,11 @@ public class WeeklyTrainingLoadCalculator {
 
     public double calculateFitness() {
         return sumOfDailyLoads() - calculateConstraint();
+    }
+
+    public double calculateAcwr() {
+        double acuteLoad = sumOfDailyLoads();
+        double chronicLoad = sumOfWeeklyLoads();
+        return (double)Math.round((acuteLoad / chronicLoad)*100) / 100;
     }
 }

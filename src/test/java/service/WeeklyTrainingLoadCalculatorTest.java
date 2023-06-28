@@ -55,11 +55,38 @@ public class WeeklyTrainingLoadCalculatorTest {
 
     List<Activity> activitiesList = Arrays.asList(activityOne, activityTwo, activityThree);
 
+    WeekTrainingLoad weeklyTrainingLoadOne = new WeekTrainingLoad(
+            1500,
+            20,
+            12,
+            12,
+            2,
+            Date.from(Instant.now())
+    );
+    WeekTrainingLoad weeklyTrainingLoadTwo = new WeekTrainingLoad(
+            1200,
+            20,
+            12,
+            12,
+            2,
+            Date.from(Instant.now())
+    );
+    WeekTrainingLoad weeklyTrainingLoadThree = new WeekTrainingLoad(
+            2000,
+            20,
+            12,
+            12,
+            2,
+            Date.from(Instant.now())
+    );
+    List<WeekTrainingLoad> weeklyTrainingLoadList = Arrays.asList(weeklyTrainingLoadOne, weeklyTrainingLoadTwo, weeklyTrainingLoadThree);
+
     @BeforeEach void setUp() {
-        classUnderTest = new WeeklyTrainingLoadCalculator(activitiesList);
+        classUnderTest = new WeeklyTrainingLoadCalculator(activitiesList, weeklyTrainingLoadList);
     }
 
     @Test
+    @DisplayName("Test the calcul of the sum of daily loads")
     public void calculate_sumOfDailyLoads() {
         double result = classUnderTest.sumOfDailyLoads();
 
@@ -67,6 +94,15 @@ public class WeeklyTrainingLoadCalculatorTest {
     }
 
     @Test
+    @DisplayName("Test the calcul of the sum of weekly loads")
+    public void calculate_sumOfWeeklyLoads() {
+        double result = classUnderTest.sumOfWeeklyLoads();
+
+        assertThat(result).isEqualTo(4700);
+    }
+
+    @Test
+    @DisplayName("Test the calcul of the smonotony")
     public void calculate_monotony() {
         double result = classUnderTest.calculateMonotony();
 
@@ -74,6 +110,7 @@ public class WeeklyTrainingLoadCalculatorTest {
     }
 
     @Test
+    @DisplayName("Test the calcul of the constraint")
     public void calculate_constraint() {
         double result = classUnderTest.calculateConstraint();
 
@@ -81,9 +118,18 @@ public class WeeklyTrainingLoadCalculatorTest {
     }
 
     @Test
+    @DisplayName("Test the calcul of the fitness")
     public void calculate_fitness() {
         double result = classUnderTest.calculateFitness();
 
         assertThat(result).isEqualTo(-1069);
+    }
+
+    @Test
+    @DisplayName("Test the calcul of the acwr")
+    public  void calculate_acwr() {
+        double result = classUnderTest.calculateAcwr();
+
+        assertThat(result).isEqualTo(0.03);
     }
 }
