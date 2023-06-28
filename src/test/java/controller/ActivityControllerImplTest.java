@@ -11,10 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.awt.desktop.AboutEvent;
-import java.sql.Date;
+import static org.appDesktop.service.UserService.getUserId;
 import java.time.DayOfWeek;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -34,28 +32,28 @@ public class ActivityControllerImplTest {
     LocalDate endDateOfWeek = startDateOfWeek.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
     Activity activity = new Activity(
             "MMA",
-            Date.from(Instant.parse("1995-12-25T19:00:30.00Z")),
+            LocalDate.parse("1995-12-25"),
             330,
             5
     );
 
     Activity badActivityDurationNegative = new Activity(
             "MMA",
-            Date.from(Instant.parse("1995-12-25T19:00:30.00Z")),
+            LocalDate.parse("1995-12-25"),
             -330,
             5
     );
 
     Activity badActivityRpeNegative = new Activity(
             "MMA",
-            Date.from(Instant.parse("1995-12-25T19:00:30.00Z")),
+            LocalDate.parse("1995-12-25"),
             330,
             -5
     );
 
     Activity badActivityRpeBiggerThanTen = new Activity(
             "MMA",
-            Date.from(Instant.parse("1995-12-25T19:00:30.00Z")),
+            LocalDate.parse("1995-12-25"),
             330,
             15
     );
@@ -63,6 +61,8 @@ public class ActivityControllerImplTest {
     List<Activity> listActivity = new ArrayList<Activity>();
 
     String id = "idActivity";
+
+    String userId = getUserId();
 
     @BeforeEach
     public void setUp() {
@@ -97,18 +97,28 @@ public class ActivityControllerImplTest {
         //Then
         verify(activityRepository).save(activity);
         verify(activityRepository).save(any(Activity.class));
-        verify(activityRepository, never()).getAllActivitiesOfWeek("649988ddefe3540f408a41c1", startDateOfWeek, endDateOfWeek);
+        verify(activityRepository, never()).getAllActivitiesOfWeek(userId, startDateOfWeek, endDateOfWeek);
         verify(activityRepository, times(1)).save(any(Activity.class));
         assertThat(result).isEqualTo(id);
     }
 
     @Test
     public void get_all_activitie_of_week(){
-        when(activityRepository.getAllActivitiesOfWeek("649988ddefe3540f408a41c1", startDateOfWeek, endDateOfWeek)).thenReturn(listActivity);
+        when(activityRepository.getAllActivitiesOfWeek(userId, startDateOfWeek, endDateOfWeek)).thenReturn(listActivity);
 
         List<Activity> result = classUnderTest.getAllActivitiesOfTheWeek();
 
-        verify(activityRepository).getAllActivitiesOfWeek("649988ddefe3540f408a41c1", startDateOfWeek, endDateOfWeek);
+        verify(activityRepository).getAllActivitiesOfWeek(userId, startDateOfWeek, endDateOfWeek);
+        assertThat(result).isEqualTo(listActivity);
+    }
+
+    @Test
+    public void get_all_28_days_activitie(){
+        when(activityRepository.getAllLast28DayActivities(userId, startDateOfWeek, endDateOfWeek)).thenReturn(listActivity);
+
+        List<Activity> result = classUnderTest.getAllLast28DayActivities();
+
+        verify(activityRepository).getAllLast28DayActivities(userId, startDateOfWeek, endDateOfWeek);
         assertThat(result).isEqualTo(listActivity);
     }
 }
