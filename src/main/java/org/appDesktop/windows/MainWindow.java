@@ -1,6 +1,7 @@
 package org.appDesktop.windows;
 
 import org.appDesktop.form.activityForm.ActivityForm;
+import org.appDesktop.form.userForm.UserForm;
 import org.appDesktop.model.Activity;
 
 import javax.swing.*;
@@ -9,55 +10,56 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 public class MainWindow extends JFrame {
-    ActivityForm form = new ActivityForm();
+    private JPanel mainPanel;
+    private JPanel activityPanel;
+    private JPanel userPanel;
+    private JToggleButton navigationButton;
+
     public MainWindow() {
-        super("Une fenêtre");
+        setTitle("Application de navigation");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(600, 400);
+        setMinimumSize(new Dimension(600, 400));
 
-        Toolkit tk = Toolkit.getDefaultToolkit();
-        setBounds(0,0, 600, 400);
-        // Centre une fenetre
-        setLocationRelativeTo(null);
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new CardLayout());
 
-        JPanel rootPane = form.getRootPane();
-        System.out.println(rootPane);
+        activityPanel = new ActivityForm().getRootPane();
+        userPanel = new UserForm().getPanel();
 
-        //On créé le container (ou JPannel)
-        Container cp = this.getContentPane();
+        mainPanel.add(activityPanel, "activity");
+        mainPanel.add(userPanel, "user");
 
-        cp.add(rootPane);
+        getContentPane().add(mainPanel);
+
+        navigationButton = new JToggleButton("Afficher le formulaire utilisateur");
+        navigationButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
+                if (navigationButton.isSelected()) {
+                    cardLayout.show(mainPanel, "user");
+                    navigationButton.setText("Afficher l'activité");
+                } else {
+                    cardLayout.show(mainPanel, "activity");
+                    navigationButton.setText("Afficher le formulaire utilisateur");
+                }
+            }
+        });
+        getContentPane().add(navigationButton, BorderLayout.SOUTH);
 
         setVisible(true);
-
-        ActionListener buttonListener = new ButtonListener();
-        form.getAjouterButton().addActionListener(buttonListener);
-        form.getAjouterButton().setActionCommand("ajouterButton");
-        form.getRetourButton().addActionListener(buttonListener);
-        form.getRetourButton().setActionCommand("retourButton");
-    }
-    class ButtonListener implements ActionListener
-    {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String commande = e.getActionCommand();
-            if (commande.equals("ajouterButton")) {
-                String nameField = form.getName().getText();
-                int durationField = (Integer) form.getDuration().getValue();
-                int rpe = form.getRpeSlider().getValue();
-                int year = (Integer) form.getAnnee().getValue();
-                int month = (Integer) form.getMois().getValue();
-                int day = (Integer) form.getJour().getValue();
-                form.formatDate(day,month,year);
-                LocalDate date = form.getDate();
-                Activity activity = new Activity(nameField, date, durationField, rpe);
-
-            }
-            else if (commande.equals("retourButton")) {
-                // action liée au bouton cancel
-                System.out.println("Cancel");
-            }
-        }
     }
 
-    public static void main(String[] args) {JFrame window = new MainWindow();}
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            MainWindow mainWindow = new MainWindow();
+        });
+    }
 }
