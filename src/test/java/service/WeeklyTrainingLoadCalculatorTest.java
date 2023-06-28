@@ -65,4 +65,25 @@ public class WeeklyTrainingLoadCalculatorTest {
 
         assertThat(result).isEqualTo(118);
     }
+
+    @Test
+    public void calculate_monotony() {
+        double result = classUnderTest.calculateMonotony();
+
+        assertThat(result).isEqualTo(10.06);
+    }
+
+    @Test
+    public void calculate_constraint() {
+        double result = classUnderTest.calculateConstraint();
+
+        assertThat(result).isEqualTo(1187);
+    }
+
+    @Test
+    public void calculate_fitness() {
+        double result = classUnderTest.calculateFitness();
+
+        assertThat(result).isEqualTo(-1069);
+    }
 }
