@@ -34,10 +34,11 @@ public class WeekTrainingLoadRepositoryImpl implements IWeekTrainingLoadReposito
     };
 
     @Override
-    public WeekTrainingLoad getWeekTraningLoadOfTheWeek(LocalDate firstDate, LocalDate lastDate){
+    public WeekTrainingLoad getWeekTraningLoadOfTheWeek(String userId, LocalDate firstDate, LocalDate lastDate){
         Bson query = Filters.and(
                 Filters.gte("date", Date.from(firstDate.atStartOfDay(ZoneId.systemDefault()).toInstant())),
-                Filters.lte("date", Date.from(lastDate.atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                Filters.lte("date", Date.from(lastDate.atStartOfDay(ZoneId.systemDefault()).toInstant())),
+                Filters.eq("userId", userId)
         );
         Document document = this.collection.find(query).first();
         if (document != null) {
