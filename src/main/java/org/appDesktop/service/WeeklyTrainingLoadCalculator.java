@@ -14,7 +14,7 @@ public class WeeklyTrainingLoadCalculator {
     public WeeklyTrainingLoadCalculator(List<Activity> activitiesList) {
         this.activitiesList = activitiesList;
 
-        averageDailyLoad = sumOfDailyLoads() / activitiesList.size();
+        averageDailyLoad = sumOfDailyLoads() / 7;
     }
 
     public double sumOfDailyLoads() {
@@ -36,11 +36,11 @@ public class WeeklyTrainingLoadCalculator {
     public double calculateMonotony() {
         int days = 7 - 1;
         double et = Math.sqrt(averageDailyLoad / days);
-        return averageDailyLoad / et;
+        return (double)Math.round((averageDailyLoad / et)*100) / 100;
     }
 
     public int calculateConstraint() {
-        double constraint = sumOfWeeklyLoads() * calculateMonotony();
+        double constraint = sumOfDailyLoads() * calculateMonotony();
         return Math.round((float)constraint);
     }
 
