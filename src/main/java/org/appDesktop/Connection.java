@@ -18,6 +18,7 @@ import org.bson.Document;
 
 import java.sql.Date;
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Slf4j
 public class Connection {
@@ -37,7 +38,7 @@ public class Connection {
             Activity activity = new Activity(
                     "649988ddefe3540f408a41c1",
                     "MMA",
-                    Date.from(Instant.now()),
+                    LocalDate.now(),
                     300,
                     5,
                     3000
