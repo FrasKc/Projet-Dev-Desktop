@@ -44,5 +44,18 @@ public class ActivityRepositoryImpl implements IActivityRepository {
         return activities;
     }
 
+    @Override
+    public List<Activity> getAllLast28DayActivities(String userId, LocalDate startDay, LocalDate todayDate) {
+        Bson query = Filters.and(
+                Filters.gte("date", Date.from(startDay.atStartOfDay(ZoneId.systemDefault()).toInstant())),
+                Filters.lte("date", Date.from(todayDate.atStartOfDay(ZoneId.systemDefault()).toInstant())),
+                Filters.eq("userId", userId)
+        );
+        List<Activity> activities = new ArrayList<Activity>();
+        for (Document document : this.collection.find()) {
+            activities.add(documentToActivity(document));
+        }
+        return activities;
+    }
 
 }

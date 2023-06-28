@@ -12,4 +12,13 @@ public class DateService {
     public static LocalDate getLastDayOfTheWeek() {
         return getFirstDayOfTheWeek().with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
     }
+
+    public static LocalDate getLast28Day() {
+        LocalDate currentDate = LocalDate.now();
+        return currentDate.minusDays(28);
+    }
+
+    public static LocalDate getTodayDate() {
+        return LocalDate.now();
+    }
 }

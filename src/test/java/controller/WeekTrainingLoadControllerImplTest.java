@@ -12,9 +12,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.sql.Array;
 import java.sql.Date;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
 
+import static org.appDesktop.service.DateService.getFirstDayOfTheWeek;
+import static org.appDesktop.service.DateService.getLastDayOfTheWeek;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -34,7 +39,19 @@ public class WeekTrainingLoadControllerImplTest {
             2,
             Date.from(Instant.now())
     );
+
+    WeekTrainingLoad weekTrainingLoadFalse = new WeekTrainingLoad(
+            1222,
+            20,
+            12,
+            12,
+            -2,
+            Date.from(Instant.now())
+    );
+
     String id = "idWeekTrainingLoad";
+
+    String userId = "00000000";
 
     @BeforeEach
     public void setUp() {
@@ -42,7 +59,7 @@ public class WeekTrainingLoadControllerImplTest {
     }
 
     @Test
-    public void save_withActivity_shouldCallRepository() throws Exception {
+    public void save_withWeekTrainingLoad_shouldCallRepository() {
         //Given
         when(weekTrainingLoadRepository.save(weekTrainingLoad)).thenReturn(id);
 
@@ -55,4 +72,29 @@ public class WeekTrainingLoadControllerImplTest {
         verify(weekTrainingLoadRepository, times(1)).save(any(WeekTrainingLoad.class));
         assertThat(result).isEqualTo(id);
     }
+
+    @Test
+    public void get_WeekTrainingLoad_of_the_week_shouldCallRepository() {
+        //Given
+        when(weekTrainingLoadRepository.getWeekTraningLoadOfTheWeek(userId, getFirstDayOfTheWeek(), getLastDayOfTheWeek())).thenReturn(weekTrainingLoad);
+
+        //When
+        WeekTrainingLoad result = classUnderTest.getWeekTrainingLoadOfTheCurrentWeek();
+
+        //Then
+        verify(weekTrainingLoadRepository).getWeekTraningLoadOfTheWeek(userId, getFirstDayOfTheWeek(), getLastDayOfTheWeek());
+        verify(weekTrainingLoadRepository).getWeekTraningLoadOfTheWeek(userId, getFirstDayOfTheWeek(), getLastDayOfTheWeek());
+        verify(weekTrainingLoadRepository, times(1)).getWeekTraningLoadOfTheWeek(userId, getFirstDayOfTheWeek(), getLastDayOfTheWeek());
+        assertThat(result).isEqualTo(weekTrainingLoad);
+    }
+
+    @Test
+    public void update_WeekTrainingLoad_of_the_week_shouldCallRepository() {
+        classUnderTest.updateWeekTrainingLoad(weekTrainingLoad);
+        //Then
+        verify(weekTrainingLoadRepository).updateWeekTrainingLoad(weekTrainingLoad);
+        verify(weekTrainingLoadRepository).updateWeekTrainingLoad(weekTrainingLoad);
+        verify(weekTrainingLoadRepository, times(1)).updateWeekTrainingLoad(weekTrainingLoad);
+    }
+
 }
