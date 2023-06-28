@@ -1,16 +1,11 @@
 package org.appDesktop.controller.activity;
 
-import lombok.AllArgsConstructor;
 import org.appDesktop.model.Activity;
 import org.appDesktop.repository.activity.IActivityRepository;
-import org.appDesktop.service.DateService;
-import org.appDesktop.service.PropertiesReader;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
-
+import static org.appDesktop.service.UserService.getUserId;
 import static org.appDesktop.service.DateService.*;
 
 
@@ -20,8 +15,7 @@ public class ActivityControllerImpl implements IActivityController {
 
     public ActivityControllerImpl(IActivityRepository activityRepository){
         this.activityRepository = activityRepository;
-        PropertiesReader propertiesReader = new PropertiesReader("user.properties");
-        this.userId = propertiesReader.getProperty().getProperty("user.id");
+        this.userId = getUserId();
     }
     @Override
     public String saveActivity(Activity activity) throws Exception {
@@ -52,7 +46,7 @@ public class ActivityControllerImpl implements IActivityController {
     }
 
     @Override
-    public List<Activity> getAllLast28DayActivities(String userId, LocalDate startDay, LocalDate todayDate){
+    public List<Activity> getAllLast28DayActivities(){
         return this.activityRepository.getAllLast28DayActivities(this.userId, getLast28Day(), getTodayDate());
     }
 }

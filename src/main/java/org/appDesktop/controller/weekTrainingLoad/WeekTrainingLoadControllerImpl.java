@@ -8,7 +8,7 @@ import org.appDesktop.service.PropertiesReader;
 
 import static org.appDesktop.service.DateService.getFirstDayOfTheWeek;
 import static org.appDesktop.service.DateService.getLastDayOfTheWeek;
-
+import static org.appDesktop.service.UserService.getUserId;
 
 public class WeekTrainingLoadControllerImpl implements IWeekTrainingLoadController{
     IWeekTrainingLoadRepository weekTrainingLoadRepository;
@@ -17,8 +17,7 @@ public class WeekTrainingLoadControllerImpl implements IWeekTrainingLoadControll
 
     public WeekTrainingLoadControllerImpl(IWeekTrainingLoadRepository weekTrainingLoadRepository){
         this.weekTrainingLoadRepository = weekTrainingLoadRepository;
-        PropertiesReader propertiesReader = new PropertiesReader("user.properties");
-        this.userId = propertiesReader.getProperty().getProperty("user.id");
+        this.userId = getUserId();
     }
 
     @Override
