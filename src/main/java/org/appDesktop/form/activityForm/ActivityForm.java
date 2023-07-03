@@ -107,29 +107,33 @@ public class ActivityForm {
         // Désactivez le bouton de validation initialement
         ajouterButton.setEnabled(false);
 
+        InputListener inputListener = new InputListener();
         // Ajoutez un DocumentListener à nameTextField
-        name.getDocument().addDocumentListener(new DocumentListener() {
-            public void changedUpdate(DocumentEvent e) {
-                check();
-            }
-            public void removeUpdate(DocumentEvent e) {
-                check();
-            }
-            public void insertUpdate(DocumentEvent e) {
-                check();
-            }
+        name.getDocument().addDocumentListener(inputListener);
+    }
 
-            public void check() {
-                // Vérifiez si tous les champs sont remplis
-                if (name.getText().trim().isEmpty()) {
-                    // Si nameTextField est vide, désactivez le bouton de validation
-                    ajouterButton.setEnabled(false);
-                } else {
-                    // Sinon, activez le bouton de validation
-                    ajouterButton.setEnabled(true);
-                }
+    class InputListener implements DocumentListener {
+
+        public void changedUpdate(DocumentEvent e) {
+            check();
+        }
+        public void removeUpdate(DocumentEvent e) {
+            check();
+        }
+        public void insertUpdate(DocumentEvent e) {
+            check();
+        }
+
+        public void check() {
+            // Vérifiez si tous les champs sont remplis
+            if (name.getText().trim().isEmpty()) {
+                // Si nameTextField est vide, désactivez le bouton de validation
+                ajouterButton.setEnabled(false);
+            } else {
+                // Sinon, activez le bouton de validation
+                ajouterButton.setEnabled(true);
             }
-        });
+        }
     }
 
     private void adjustDaySpinner() {

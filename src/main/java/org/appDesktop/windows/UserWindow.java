@@ -1,14 +1,9 @@
 package org.appDesktop.windows;
 
-import org.appDesktop.form.activityForm.ActivityForm;
 import org.appDesktop.form.userForm.UserForm;
-import org.appDesktop.model.Activity;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.time.LocalDate;
 
 public class UserWindow extends JFrame {
     UserForm form = new UserForm();
