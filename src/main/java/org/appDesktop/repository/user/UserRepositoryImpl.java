@@ -16,7 +16,6 @@ public class UserRepositoryImpl implements IUserRepository {
     @Override
     public String save(User user) {
         try {
-            System.out.println(userToDocument(user));
             InsertOneResult result = this.collection.insertOne(userToDocument(user));
             return result.getInsertedId().asObjectId().getValue().toString();
         }catch (Exception e){

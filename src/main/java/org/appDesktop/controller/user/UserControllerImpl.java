@@ -14,11 +14,8 @@ public class UserControllerImpl implements IUserController {
     IUserRepository userRepository;
     public String saveUser(User user) throws Exception {
         if(verifyDateOfBirth(user)) {
-            System.out.println("Début");
             String userId =  userRepository.save(user);
-            System.out.println("2");
             setUserId(userId);
-            System.out.println("Set Reussi");
             return userId;
         } else {
             throw new Exception("The date of birth is in the future");
