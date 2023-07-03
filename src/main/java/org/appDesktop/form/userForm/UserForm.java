@@ -34,6 +34,7 @@ public class UserForm {
         spinnerDay.setModel(new SpinnerNumberModel(currentDay, 1, 31, 1));
         spinnerMonth.setModel(new SpinnerNumberModel(currentMonth, 1, 12, 1));
         spinnerYear.setModel(new SpinnerNumberModel(currentYear, 1900, currentYear, 1));
+        spinnerYear.setEditor(new JSpinner.NumberEditor(spinnerYear, "#"));
 
         spinnerMonth.addChangeListener(e -> adjustDaySpinner());
         spinnerYear.addChangeListener(e -> adjustDaySpinner());
@@ -70,9 +71,6 @@ public class UserForm {
                             || textLastname.getText().isEmpty()
                             || (!maleRadioButton.isSelected() && !femaleRadioButton.isSelected())
             ) {
-                System.out.println(!textFirstname.getText().isEmpty());
-                System.out.println(!textLastname.getText().isEmpty());
-                System.out.println((!maleRadioButton.isSelected() && !femaleRadioButton.isSelected()));
                 validateButton.setEnabled(false);
             } else {
                 validateButton.setEnabled(true);
@@ -93,9 +91,6 @@ public class UserForm {
                             || textLastname.getText().isEmpty()
                             || (!maleRadioButton.isSelected() && !femaleRadioButton.isSelected())
             ) {
-                System.out.println(!textFirstname.getText().isEmpty());
-                System.out.println(!textLastname.getText().isEmpty());
-                System.out.println(!maleRadioButton.isSelected() && !femaleRadioButton.isSelected());
                 validateButton.setEnabled(false);
             } else {
                 validateButton.setEnabled(true);
