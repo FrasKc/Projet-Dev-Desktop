@@ -10,5 +10,6 @@ public class UserService {
     public static void setUserId(String userId){
         PropertieWriter propertieWriter = new PropertieWriter();
         propertieWriter.writeNewPropertie("user.properties", "user.id", userId);
+        System.out.println("Set Vraiment réussi");
     }
 }

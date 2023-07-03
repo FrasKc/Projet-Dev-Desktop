@@ -7,14 +7,18 @@ import static org.appDesktop.service.UserService.setUserId;
 
 import java.sql.Date;
 import java.time.Instant;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 public class UserControllerImpl implements IUserController {
     IUserRepository userRepository;
     public String saveUser(User user) throws Exception {
         if(verifyDateOfBirth(user)) {
+            System.out.println("Début");
             String userId =  userRepository.save(user);
+            System.out.println("2");
             setUserId(userId);
+            System.out.println("Set Reussi");
             return userId;
         } else {
             throw new Exception("The date of birth is in the future");
@@ -22,7 +26,7 @@ public class UserControllerImpl implements IUserController {
     }
 
     public boolean verifyDateOfBirth(User user) {
-        if(user.getBirthDate().before(Date.from(Instant.now()))) {
+        if(user.getBirthDate().isBefore(LocalDate.now())) {
             return true;
         } else {
             return false;
