@@ -1,98 +1,70 @@
 package org.appDesktop.form.activityForm;
 
+import com.mongodb.client.MongoCollection;
+import lombok.Getter;
+import org.appDesktop.model.Activity;
+import org.appDesktop.service.DatabaseService;
+import org.bson.Document;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.Calendar;
-import java.util.Date;
 
+import static org.appDesktop.service.DateService.FormatDate;
+import static org.appDesktop.service.UserService.getUserId;
+
+@Getter
 public class ActivityForm {
     private JPanel rootPane;
+
     private JTextField name;
+
+    private LocalDate date;
+
+    private JButton retourButton;
+    private JButton ajouterButton;
+
+    private JSpinner jour;
+    private JSpinner mois;
+    private JSpinner annee;
+
     private JSpinner duration;
 
-    public LocalDate getDate() {
-        return date;
-    }
+    private JSlider rpeSlider;
+    private JLabel rpeValue;
 
     public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    private LocalDate date;
-    private JTextField rpe;
-
-    public void setName(JTextField name) {
-        this.name = name;
-    }
-
-    public void setDuration(JSpinner duration) {
-        this.duration = duration;
-    }
-
-
-    public JTextField getName() {
-        return name;
-    }
-
-    public JSpinner getDuration() {
-        return duration;
-    }
-
-
-    public JButton getRetourButton() {
-        return retourButton;
-    }
-
-    public JButton getAjouterButton() {
-        return ajouterButton;
-    }
-
-    private JButton retourButton;
-    private JButton ajouterButton;
-    private JSpinner jour;
-
-    public JSpinner getJour() {
-        return jour;
-    }
-
-    public JSpinner getMois() {
-        return mois;
-    }
-
-    public JSpinner getAnnee() {
-        return annee;
-    }
-
-    private JSpinner mois;
-    private JSpinner annee;
-
-    public JSlider getRpeSlider() {
-        return rpeSlider;
-    }
-
-    private JSlider rpeSlider;
-    private JLabel rpeValue;
-
     Calendar calendar = Calendar.getInstance();
-
     int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
     int currentMonth = calendar.get(Calendar.MONTH) + 1;  // +1 car les mois sont indexés à partir de 0
     int currentYear = calendar.get(Calendar.YEAR);
+
+    DatabaseService databaseService;
+
     public ActivityForm() {
-        duration.setModel(new SpinnerNumberModel(1, 1, 100, 1));
+        duration.setValue(1);
+        duration.setModel(new SpinnerNumberModel((int) duration.getValue(), 1, 100000, 1));
+
         jour.setModel(new SpinnerNumberModel(currentDay, 1, 31, 1));
+
         mois.setModel(new SpinnerNumberModel(currentMonth, 1, 12, 1));
         JSpinner.NumberEditor editor = new JSpinner.NumberEditor(mois, "00");
         mois.setEditor(editor);
+        mois.addChangeListener(e -> adjustDaySpinner());
+
         annee.setModel(new SpinnerNumberModel(currentYear, 1900, currentYear, 1));
         annee.setEditor(new JSpinner.NumberEditor(annee, "#"));
+        annee.addChangeListener(e -> adjustDaySpinner());
+
         adjustDaySpinner();
+
         rpeSlider.setMinimum(0);
         rpeSlider.setMaximum(10);
         rpeSlider.setValue(0);
@@ -101,16 +73,12 @@ public class ActivityForm {
             rpeValue.setText(String.valueOf(rpe));
         });
 
-        mois.addChangeListener(e -> adjustDaySpinner());
-
-        annee.addChangeListener(e -> adjustDaySpinner());
-
-        // Désactivez le bouton de validation initialement
-        ajouterButton.setEnabled(false);
-
         InputListener inputListener = new InputListener();
-        // Ajoutez un DocumentListener à nameTextField
         name.getDocument().addDocumentListener(inputListener);
+
+        ActivityActionListener activityActionListener = new ActivityActionListener();
+        ajouterButton.addActionListener(activityActionListener);
+        ajouterButton.setEnabled(false);
     }
 
     class InputListener implements DocumentListener {
@@ -126,13 +94,38 @@ public class ActivityForm {
         }
 
         public void check() {
-            // Vérifiez si tous les champs sont remplis
             if (name.getText().trim().isEmpty()) {
-                // Si nameTextField est vide, désactivez le bouton de validation
                 ajouterButton.setEnabled(false);
             } else {
-                // Sinon, activez le bouton de validation
                 ajouterButton.setEnabled(true);
+            }
+        }
+    }
+
+    class ActivityActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int day = (int)jour.getValue();
+            int month = (int)mois.getValue();
+            int year = (int)annee.getValue();
+            int duree = (int)duration.getValue();
+            int rpe = rpeSlider.getValue();
+
+            Activity newActivity = new Activity(
+                    getUserId(),
+                    name.getText(),
+                    FormatDate(day, month, year),
+                    duree,
+                    rpe
+            );
+
+            try {
+                databaseService = new DatabaseService();
+                MongoCollection<Document> collection = databaseService.getCollection("activity");
+                databaseService.getActivityController(collection).saveActivity(newActivity);
+            } catch (Exception ex) {
+                throw new RuntimeException();
             }
         }
     }
@@ -147,11 +140,5 @@ public class ActivityForm {
         int maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
         jour.setModel(new SpinnerNumberModel(1, 1, maxDay, 1));
-
-    }
-
-
-    public JPanel getRootPane() {
-        return rootPane;
     }
 }
