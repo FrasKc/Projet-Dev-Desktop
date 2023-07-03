@@ -52,7 +52,7 @@ public class Connection {
            User user = new User(
                    "John",
                    "Doe",
-                   Date.from(Instant.parse("1995-12-25T19:00:30.00Z")),
+                   LocalDate.now(),
                    "male"
            );
             UserControllerImpl userController = new UserControllerImpl(userRepository);

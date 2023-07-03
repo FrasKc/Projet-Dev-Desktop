@@ -150,10 +150,7 @@ public class ActivityForm {
 
     }
 
-    public void formatDate(int day, int month, int year) {
-        LocalDate date = LocalDate.of(year, month,day);
-        setDate(date);
-    }
+
     public JPanel getRootPane() {
         return rootPane;
     }

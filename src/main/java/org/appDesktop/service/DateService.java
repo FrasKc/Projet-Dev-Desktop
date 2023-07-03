@@ -21,4 +21,9 @@ public class DateService {
     public static LocalDate getTodayDate() {
         return LocalDate.now();
     }
+
+    public static LocalDate FormatDate(int day, int month, int year) {
+        System.out.println(LocalDate.of(year, month,day));
+        return LocalDate.of(year, month,day);
+    }
 }

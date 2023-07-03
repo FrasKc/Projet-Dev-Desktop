@@ -1,16 +1,26 @@
 package org.appDesktop.form.userForm;
 
+import com.mongodb.client.MongoCollection;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.appDesktop.model.User;
+import org.appDesktop.repository.user.UserRepositoryImpl;
+import org.appDesktop.service.DatabaseService;
+import org.bson.Document;
 
 import javax.annotation.processing.Generated;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
 
+import static org.appDesktop.service.DateService.FormatDate;
+
 @Getter
+@Slf4j
 public class UserForm {
     // Objet de la vue
     private JPanel rootPane;
@@ -29,6 +39,7 @@ public class UserForm {
     int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
     int currentMonth = calendar.get(Calendar.MONTH) + 1;  // +1 car les mois sont indexés à partir de 0
     int currentYear = calendar.get(Calendar.YEAR);
+    DatabaseService databaseService;
 
     public UserForm() {
         spinnerDay.setModel(new SpinnerNumberModel(currentDay, 1, 31, 1));
@@ -52,6 +63,31 @@ public class UserForm {
         UserActionListener userActionListener = new UserActionListener();
         maleRadioButton.addActionListener(userActionListener);
         femaleRadioButton.addActionListener(userActionListener);
+
+        validateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ButtonModel selectedButtonModel = radioButtonGroup.getSelection();
+
+                int day = (int)spinnerDay.getValue();
+                int month = (int)spinnerMonth.getValue();
+                int year = (int)spinnerYear.getValue();
+                System.out.println(day +" "+ month +" "+ year);
+                User newUser = new User(
+                        textFirstname.getText(),
+                        textLastname.getText(),
+                        FormatDate(day, month, year),
+                        selectedButtonModel == maleRadioButton.getModel() ? "male" : "female"
+                );
+                try {
+                    databaseService = new DatabaseService();
+                    MongoCollection<Document> collection = databaseService.getCollection("user");
+                    databaseService.getUserController(collection).saveUser(newUser);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
     }
 
     class UserDocumentListener implements DocumentListener {
@@ -99,13 +135,16 @@ public class UserForm {
     }
 
     private void adjustDaySpinner() {
+        int day = (int)spinnerDay.getValue();
         int month = (int)spinnerMonth.getValue();
         int year = (int)spinnerYear.getValue();
 
+        Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month - 1);
         int maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
-        spinnerDay.setModel(new SpinnerNumberModel(1, 1, maxDay, 1));
+        spinnerDay.setModel(new SpinnerNumberModel(day, 1, maxDay, 1));
+
     }
 }

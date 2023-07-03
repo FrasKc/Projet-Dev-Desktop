@@ -7,6 +7,7 @@ import static org.appDesktop.service.UserService.setUserId;
 
 import java.sql.Date;
 import java.time.Instant;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 public class UserControllerImpl implements IUserController {
@@ -22,7 +23,7 @@ public class UserControllerImpl implements IUserController {
     }
 
     public boolean verifyDateOfBirth(User user) {
-        if(user.getBirthDate().before(Date.from(Instant.now()))) {
+        if(user.getBirthDate().isBefore(LocalDate.now())) {
             return true;
         } else {
             return false;

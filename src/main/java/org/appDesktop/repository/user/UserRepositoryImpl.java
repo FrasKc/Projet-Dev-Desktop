@@ -15,7 +15,12 @@ public class UserRepositoryImpl implements IUserRepository {
     }
     @Override
     public String save(User user) {
-        InsertOneResult result = this.collection.insertOne(userToDocument(user));
-        return result.getInsertedId().asObjectId().getValue().toString();
+        try {
+            InsertOneResult result = this.collection.insertOne(userToDocument(user));
+            return result.getInsertedId().asObjectId().getValue().toString();
+        }catch (Exception e){
+            throw e;
+        }
+
     }
 }
