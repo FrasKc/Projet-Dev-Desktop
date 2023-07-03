@@ -39,7 +39,7 @@ public class UserForm {
     int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
     int currentMonth = calendar.get(Calendar.MONTH) + 1;  // +1 car les mois sont indexés à partir de 0
     int currentYear = calendar.get(Calendar.YEAR);
-    DatabaseService databaseService = new DatabaseService();
+    DatabaseService databaseService;
 
     public UserForm() {
         spinnerDay.setModel(new SpinnerNumberModel(currentDay, 1, 31, 1));
@@ -80,7 +80,9 @@ public class UserForm {
                         selectedButtonModel == maleRadioButton.getModel() ? "male" : "female"
                 );
                 try {
-                    databaseService.getUserController().saveUser(newUser);
+                    databaseService = new DatabaseService();
+                    MongoCollection<Document> collection = databaseService.getCollection("user");
+                    databaseService.getUserController(collection).saveUser(newUser);
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
