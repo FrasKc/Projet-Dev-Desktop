@@ -14,7 +14,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.Locale;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,12 +34,12 @@ public class UserControllerImplTest {
     User user = new User(
             "John",
             "Doe",
-            Date.from(Instant.parse("1995-12-25T19:00:30.00Z")),
+            LocalDate.of(1995,12,25),
             "male"
     );
     String userId = "userId";
 
-    Date futurDateOfBirth = new Date(Date.from(Instant.now()).getTime() + 86400);
+    LocalDate futurDateOfBirth = LocalDate.of(2030, 12, 20);
     User badUserWithFuturDateOfBirth = new User(
             "John",
             "Doe",

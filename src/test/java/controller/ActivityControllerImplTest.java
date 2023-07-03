@@ -13,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.appDesktop.service.DateService.*;
+import static org.appDesktop.service.DateService.getTodayDate;
 import static org.appDesktop.service.UserService.getUserId;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -32,8 +34,6 @@ public class ActivityControllerImplTest {
     @Mock
     ActivityRepositoryImpl activityRepository;
     ActivityControllerImpl classUnderTest;
-    LocalDate startDateOfWeek = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-    LocalDate endDateOfWeek = startDateOfWeek.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
     Activity activity = new Activity(
             "MMA",
             LocalDate.parse("1995-12-25"),
@@ -101,28 +101,29 @@ public class ActivityControllerImplTest {
         //Then
         verify(activityRepository).save(activity);
         verify(activityRepository).save(any(Activity.class));
-        verify(activityRepository, never()).getAllActivitiesOfWeek(userId, startDateOfWeek, endDateOfWeek);
+        verify(activityRepository, never()).getAllActivitiesOfWeek(userId, getFirstDayOfTheWeek(), getLastDayOfTheWeek());
         verify(activityRepository, times(1)).save(any(Activity.class));
         assertThat(result).isEqualTo(id);
     }
 
     @Test
     public void get_all_activitie_of_week(){
-        when(activityRepository.getAllActivitiesOfWeek(userId, startDateOfWeek, endDateOfWeek)).thenReturn(listActivity);
+        when(activityRepository.getAllActivitiesOfWeek(userId, getFirstDayOfTheWeek(), getLastDayOfTheWeek())).thenReturn(listActivity);
 
         List<Activity> result = classUnderTest.getAllActivitiesOfTheWeek();
 
-        verify(activityRepository).getAllActivitiesOfWeek(userId, startDateOfWeek, endDateOfWeek);
+        verify(activityRepository).getAllActivitiesOfWeek(userId, getFirstDayOfTheWeek(), getLastDayOfTheWeek());
         assertThat(result).isEqualTo(listActivity);
     }
 
     @Test
     public void get_all_28_days_activitie(){
-        when(activityRepository.getAllLast28DayActivities(userId, startDateOfWeek, endDateOfWeek)).thenReturn(listActivity);
+        when(activityRepository.getAllLast28DayActivities(userId, getLast28Day(), getTodayDate())).thenReturn(listActivity);
 
         List<Activity> result = classUnderTest.getAllLast28DayActivities();
 
-        verify(activityRepository).getAllLast28DayActivities(userId, startDateOfWeek, endDateOfWeek);
+
+        verify(activityRepository).getAllLast28DayActivities(userId, getLast28Day(), getTodayDate());
         assertThat(result).isEqualTo(listActivity);
     }
 
