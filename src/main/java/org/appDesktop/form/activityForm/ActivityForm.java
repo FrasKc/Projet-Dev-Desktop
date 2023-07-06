@@ -16,6 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.Calendar;
+import lombok.Getter;
 
 import static org.appDesktop.service.DateService.FormatDate;
 import static org.appDesktop.service.UserService.getUserId;
