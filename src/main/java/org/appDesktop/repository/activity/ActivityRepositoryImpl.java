@@ -95,7 +95,7 @@ public class ActivityRepositoryImpl implements IActivityRepository {
                 Filters.eq("userId", userId)
         );
         List<Activity> activities = new ArrayList<Activity>();
-        for (Document document : this.collection.find()) {
+        for (Document document : this.collection.find(query)) {
             activities.add(documentToActivity(document));
         }
         return activities;
