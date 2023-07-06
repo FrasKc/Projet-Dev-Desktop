@@ -64,14 +64,9 @@ public class ActivityList {
     }
 
     private void showActivityDetails(Activity activity) {
-        String details = "ID: " + activity.getUserId() + "\n"
-                + "Nom: " + activity.getName() + "\n"
-                + "Date: " + activity.getDate() + "\n"
-                + "Durée: " + activity.getDuration() + " minutes\n"
-                + "RPE: " + activity.getRpe() + "\n"
-                + "Load: " + activity.getLoad();
-
-        JOptionPane.showMessageDialog(panel, details, "Détails de l'activité", JOptionPane.INFORMATION_MESSAGE);
+        Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(panel);
+        ActivityDetailsDialog dialog = new ActivityDetailsDialog(parentFrame, "Détails de l'activité", true, activity);
+        dialog.setVisible(true);
     }
 
     // ListCellRenderer personnalisé pour afficher les éléments de la liste de manière jolie
@@ -89,23 +84,12 @@ public class ActivityList {
             durationLabel = new JLabel();
             rpeLabel = new JLabel();
             loadLabel = new JLabel();
-            updateButton = new JButton("Update");
 
             panel.add(nameLabel, BorderLayout.NORTH);
             panel.add(durationLabel, BorderLayout.CENTER);
             panel.add(rpeLabel, BorderLayout.WEST);
             panel.add(loadLabel, BorderLayout.EAST);
-            panel.add(updateButton, BorderLayout.EAST);
 
-            updateButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    Activity selectedActivity = activityList.getSelectedValue();
-                    if (selectedActivity != null) {
-                        openUpdateActivityFrame(selectedActivity);
-                    }
-                }
-            });
         }
 
         @Override
