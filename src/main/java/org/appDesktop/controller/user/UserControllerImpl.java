@@ -3,10 +3,9 @@ package org.appDesktop.controller.user;
 import lombok.AllArgsConstructor;
 import org.appDesktop.model.User;
 import org.appDesktop.repository.user.IUserRepository;
+
 import static org.appDesktop.service.UserService.setUserId;
 
-import java.sql.Date;
-import java.time.Instant;
 import java.time.LocalDate;
 
 @AllArgsConstructor
@@ -20,6 +19,21 @@ public class UserControllerImpl implements IUserController {
         } else {
             throw new Exception("The date of birth is in the future");
         }
+    }
+
+    @Override
+    public User getUser(String userId) throws Exception {
+        User user = userRepository.findById(userId);
+
+        if(user == null) {
+            throw new Exception("User doesn't exist");
+        }
+
+        return user;
+    }
+
+    public void updateUser(String userId, User updatedUser) {
+        this.userRepository.update(userId, updatedUser);
     }
 
     public boolean verifyDateOfBirth(User user) {
