@@ -48,15 +48,7 @@ public class Connection {
 
             String id = activityController.saveActivity(activity);
             log.info("Activity saved {}", id);
-            UserRepositoryImpl userRepository = new UserRepositoryImpl(userCollection);
-           User user = new User(
-                   "John",
-                   "Doe",
-                   LocalDate.now(),
-                   "male"
-           );
-            UserControllerImpl userController = new UserControllerImpl(userRepository);
-            log.info("User saved {}", userController.saveUser(user));
+
             WeekTrainingLoadRepositoryImpl weekTrainingLoadRepository = new WeekTrainingLoadRepositoryImpl(weeklyTrainingLoadCollection);
             WeekTrainingLoadControllerImpl weekTrainingLoadController = new WeekTrainingLoadControllerImpl(weekTrainingLoadRepository);
             WeekTrainingLoad weekTraningLoad = new WeekTrainingLoad(
