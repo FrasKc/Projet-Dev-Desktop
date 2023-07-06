@@ -1,10 +1,13 @@
 package org.appDesktop.form.activityForm;
 
 import com.mongodb.client.MongoCollection;
-import lombok.Getter;
+import com.mongodb.client.model.Filters;
+import org.appDesktop.controller.activity.ActivityControllerImpl;
 import org.appDesktop.model.Activity;
 import org.appDesktop.service.DatabaseService;
 import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -45,9 +48,19 @@ public class ActivityForm {
     int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
     int currentMonth = calendar.get(Calendar.MONTH) + 1;  // +1 car les mois sont indexés à partir de 0
     int currentYear = calendar.get(Calendar.YEAR);
-
     DatabaseService databaseService;
 
+
+    public ActivityForm(String activityId) {
+        try {
+            databaseService = new DatabaseService();
+            MongoCollection<Document> collection = databaseService.getCollection("activity");
+            ActivityControllerImpl activityController = databaseService.getActivityController(collection);
+            displayActivityData(activityController.findActivityById(activityId));
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
     public ActivityForm() {
         duration.setValue(1);
         duration.setModel(new SpinnerNumberModel((int) duration.getValue(), 1, 100000, 1));
@@ -140,5 +153,33 @@ public class ActivityForm {
         int maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
         jour.setModel(new SpinnerNumberModel(1, 1, maxDay, 1));
+
+    }
+
+    public void displayActivityData(Activity activity) {
+        if (activity != null) {
+            // Remplir le nom de l'activité
+            name.setText(activity.getName());
+
+            // Remplir la durée de l'activité (assurez-vous que l'objet Activity a une propriété 'duration' correspondante)
+            int durationValue = activity.getDuration();
+            duration.setValue(durationValue);
+
+            // Remplir la date de l'activité (assurez-vous que l'objet Activity a une propriété 'date' correspondante)
+            LocalDate activityDate = activity.getDate();
+            jour.setValue(activityDate.getDayOfMonth());
+            mois.setValue(activityDate.getMonthValue());
+            annee.setValue(activityDate.getYear());
+            annee.setEditor(new JSpinner.NumberEditor(annee, "#"));
+
+            // Remplir la valeur de RPE (assurez-vous que l'objet Activity a une propriété 'rpe' correspondante)
+            int rpeValue3 = activity.getRpe();
+            rpeSlider.setValue(rpeValue3);
+            rpeValue.setText(String.valueOf(activity.getRpe()));
+        }
+    }
+
+    public JPanel getRootPane() {
+        return rootPane;
     }
 }

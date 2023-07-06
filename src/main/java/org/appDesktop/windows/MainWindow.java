@@ -27,7 +27,7 @@ public class MainWindow extends JFrame {
         mainPanel = new JPanel();
         mainPanel.setLayout(new CardLayout());
 
-        activityPanel = new ActivityForm().getRootPane();
+        //activityPanel = new ActivityForm().getRootPane();
         userPanel = new UserForm().getRootPane();
         activityListPanel = new ActivityList().getPanel();
 

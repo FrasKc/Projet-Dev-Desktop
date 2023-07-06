@@ -65,7 +65,6 @@ public class ActivityRepositoryImpl implements IActivityRepository {
     public Activity findById(String activityId) {
         Bson filter = Filters.eq("_id", new ObjectId(activityId));
         Document result = this.collection.find(filter).first();
-
         if (result == null) {
             return null;
         }
