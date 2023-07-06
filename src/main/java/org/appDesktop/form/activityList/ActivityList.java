@@ -1,23 +1,28 @@
 package org.appDesktop.form.activityList;
 
 import com.mongodb.client.MongoCollection;
+import lombok.Getter;
 import org.appDesktop.model.Activity;
 import org.appDesktop.service.DatabaseService;
 import org.bson.Document;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
-public class ActivityList extends JFrame {
+@Getter
+public class ActivityList {
     private JList<Activity> activityList;
     private DatabaseService databaseService;
+    private JPanel panel;
+    private JScrollPane scrollPane;
 
     public ActivityList() {
-        setTitle("Liste des activités");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        activityList = new JList<>();
 
         // Récupérez les activités à partir de MongoDB
         List<Activity> activities = getAllActivities();
@@ -27,16 +32,15 @@ public class ActivityList extends JFrame {
         for (Activity activity : activities) {
             listModel.addElement(activity);
         }
+        activityList.setModel(listModel);
 
-        // Créez la JList avec le modèle de liste et utilisez un ListCellRenderer personnalisé
-        activityList = new JList<>(listModel);
         activityList.setCellRenderer(new ActivityListCellRenderer());
 
-        // Ajoutez un MouseListener pour détecter les clics sur les éléments de la liste
-        activityList.addMouseListener(new MouseAdapter() {
+        // Ajoutez un ListSelectionListener pour détecter la sélection d'un élément de la liste
+        activityList.addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) { // Double clic
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
                     Activity selectedActivity = activityList.getSelectedValue();
                     if (selectedActivity != null) {
                         showActivityDetails(selectedActivity);
@@ -45,20 +49,12 @@ public class ActivityList extends JFrame {
             }
         });
 
-        // Ajoutez la JList dans un JScrollPane pour permettre le défilement
-        JScrollPane scrollPane = new JScrollPane(activityList);
+        // Créez le JScrollPane avec la JList
+        scrollPane = new JScrollPane(activityList);
 
-        // Configurez le layout de la fenêtre
-        setLayout(new BorderLayout());
-        add(scrollPane, BorderLayout.CENTER);
-
-        // Ajustez la taille du JPanel pour qu'il soit plus grand par défaut
-        int initialWidth = 800;
-        int initialHeight = 600;
-        setPreferredSize(new Dimension(initialWidth, initialHeight));
-
-        pack();
-        setLocationRelativeTo(null);
+        // Ajoutez le JScrollPane au panneau
+        panel.setLayout(new BorderLayout());
+        panel.add(scrollPane, BorderLayout.CENTER);
     }
 
     private List<Activity> getAllActivities() {
@@ -75,44 +71,64 @@ public class ActivityList extends JFrame {
                 + "RPE: " + activity.getRpe() + "\n"
                 + "Load: " + activity.getLoad();
 
-        JOptionPane.showMessageDialog(this, details, "Détails de l'activité", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(panel, details, "Détails de l'activité", JOptionPane.INFORMATION_MESSAGE);
     }
 
     // ListCellRenderer personnalisé pour afficher les éléments de la liste de manière jolie
-    private class ActivityListCellRenderer extends DefaultListCellRenderer {
-        @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+    private class ActivityListCellRenderer implements ListCellRenderer<Activity> {
+        private JPanel panel;
+        private JLabel nameLabel;
+        private JLabel durationLabel;
+        private JLabel rpeLabel;
+        private JLabel loadLabel;
+        private JButton updateButton;
 
-            if (value instanceof Activity) {
-                Activity activity = (Activity) value;
+        public ActivityListCellRenderer() {
+            panel = new JPanel(new BorderLayout());
+            nameLabel = new JLabel();
+            durationLabel = new JLabel();
+            rpeLabel = new JLabel();
+            loadLabel = new JLabel();
+            updateButton = new JButton("Update");
 
-                // Personnalisez```java
-                // Personnalisez l'apparence de l'élément de la liste ici
-                String labelText = "<html><b>" + activity.getName() + "</b><br>"
-                        + "Durée: " + activity.getDuration() + " minutes<br>"
-                        + "RPE: " + activity.getRpe() + "<br>"
-                        + "Load: " + activity.getLoad() + "</html>";
-                setText(labelText);
+            panel.add(nameLabel, BorderLayout.NORTH);
+            panel.add(durationLabel, BorderLayout.CENTER);
+            panel.add(rpeLabel, BorderLayout.WEST);
+            panel.add(loadLabel, BorderLayout.EAST);
+            panel.add(updateButton, BorderLayout.EAST);
 
-                // Personnalisez les couleurs de fond pour les éléments sélectionnés et non sélectionnés
-                if (isSelected) {
-                    setBackground(new Color(63, 63, 63)); // Couleur d'arrière-plan pour les éléments sélectionnés
-                    setForeground(Color.WHITE); // Couleur de texte pour les éléments sélectionnés
-                } else {
-                    setBackground(Color.lightGray); // Couleur d'arrière-plan pour les éléments non sélectionnés
-                    setForeground(Color.WHITE); // Couleur de texte pour les éléments non sélectionnés
+            updateButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Activity selectedActivity = activityList.getSelectedValue();
+                    if (selectedActivity != null) {
+                        openUpdateActivityFrame(selectedActivity);
+                    }
                 }
+            });
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList<? extends Activity> list, Activity value, int index, boolean isSelected, boolean cellHasFocus) {
+            nameLabel.setText("<html><b>" + value.getName() + "</b></html>");
+            durationLabel.setText("Durée: " + value.getDuration() + " minutes");
+            rpeLabel.setText("RPE: " + value.getRpe());
+            loadLabel.setText("Load: " + value.getLoad());
+
+            if (isSelected) {
+                panel.setBackground(new Color(63, 63, 63)); // Couleur d'arrière-plan pour les éléments sélectionnés
+                panel.setForeground(Color.WHITE); // Couleur de texte pour les éléments sélectionnés
+            } else {
+                panel.setBackground(Color.lightGray); // Couleur d'arrière-plan pour les éléments non sélectionnés
+                panel.setForeground(Color.BLACK); // Couleur de texte pour les éléments non sélectionnés
             }
 
-            return this;
+            return panel;
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            ActivityList activityList = new ActivityList();
-            activityList.setVisible(true);
-        });
+    private void openUpdateActivityFrame(Activity activity) {
+        // Code pour ouvrir une fenêtre ou un dialogue de mise à jour de l'activité
+        // ...
     }
 }
