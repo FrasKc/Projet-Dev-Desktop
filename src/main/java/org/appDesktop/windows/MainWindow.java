@@ -36,7 +36,7 @@ public class MainWindow extends JFrame {
             mainPanel.add(userPanel, "user");
         } else {
             userPanel = new UserForm(getUserId()).getRootPane();
-            activityPanel = new ActivityForm().getRootPane();
+            activityPanel = new ActivityForm().getRootPanel();
             activityListPanel = new ActivityList().getPanel();
 
             mainPanel.add(activityListPanel, "activity-list");

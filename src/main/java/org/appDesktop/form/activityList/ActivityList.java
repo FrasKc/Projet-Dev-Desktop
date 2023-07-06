@@ -112,10 +112,10 @@ public class ActivityList {
         }
     }
 
-    private void openUpdateActivityFrame(Activity activity) {
-        System.out.println("click -1");
-        JPanel testPane = new ActivityForm(activity.get_id()).getRootPane();
-        System.out.println("click");
-        JOptionPane.showMessageDialog(testPane, "test", "Détails de l'activité", JOptionPane.INFORMATION_MESSAGE);
-    }
+//    private void openUpdateActivityFrame(Activity activity) {
+//        System.out.println("click -1");
+//        JPanel testPane = new ActivityForm(activity.get_id()).getRootPane();
+//        System.out.println("click");
+//        JOptionPane.showMessageDialog(testPane, "test", "Détails de l'activité", JOptionPane.INFORMATION_MESSAGE);
+//    }
 }

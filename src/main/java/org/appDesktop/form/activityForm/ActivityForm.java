@@ -12,6 +12,7 @@ import org.bson.types.ObjectId;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
@@ -22,22 +23,16 @@ import static org.appDesktop.service.DateService.FormatDate;
 import static org.appDesktop.service.UserService.getUserId;
 
 @Getter
-public class ActivityForm {
-    private JPanel rootPane;
-
-    private JTextField name;
-
+public class ActivityForm extends JDialog {
+    private JPanel rootPanel;
+    private JTextField nameTextField;
     private LocalDate date;
-
     private JButton retourButton;
     private JButton ajouterButton;
-
     private JSpinner jour;
     private JSpinner mois;
     private JSpinner annee;
-
     private JSpinner duration;
-
     private JSlider rpeSlider;
     private JLabel rpeValue;
 
@@ -52,16 +47,55 @@ public class ActivityForm {
     DatabaseService databaseService;
 
 
-    public ActivityForm(String activityId) {
+    public ActivityForm(Frame owner, String title, boolean modal, Activity activity) {
+        super(owner, title, modal);
+        initComponents(activity);
+        layoutComponents();
+        attachListeners();
+        pack();
+        setLocationRelativeTo(owner);
+    }
+
+    private void layoutComponents() {
+        JPanel contentPane = new JPanel(new BorderLayout());
+        contentPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        contentPane.add(rootPanel);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
+        contentPane.add(buttonPanel, BorderLayout.SOUTH);
+        setContentPane(contentPane);
+    }
+
+    private void attachListeners() {
+        retourButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+
+        ajouterButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                dispose();
+            }
+        });
+    }
+
+    private void initComponents(Activity activity) {
+        ajouterButton.setText("Update");
         try {
             databaseService = new DatabaseService();
             MongoCollection<Document> collection = databaseService.getCollection("activity");
             ActivityControllerImpl activityController = databaseService.getActivityController(collection);
-            displayActivityData(activityController.findActivityById(activityId));
+            displayActivityData(activityController.findActivityById(activity.get_id()));
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
+
     public ActivityForm() {
         duration.setValue(1);
         duration.setModel(new SpinnerNumberModel((int) duration.getValue(), 1, 100000, 1));
@@ -88,7 +122,7 @@ public class ActivityForm {
         });
 
         InputListener inputListener = new InputListener();
-        name.getDocument().addDocumentListener(inputListener);
+        nameTextField.getDocument().addDocumentListener(inputListener);
 
         ActivityActionListener activityActionListener = new ActivityActionListener();
         ajouterButton.addActionListener(activityActionListener);
@@ -100,15 +134,17 @@ public class ActivityForm {
         public void changedUpdate(DocumentEvent e) {
             check();
         }
+
         public void removeUpdate(DocumentEvent e) {
             check();
         }
+
         public void insertUpdate(DocumentEvent e) {
             check();
         }
 
         public void check() {
-            if (name.getText().trim().isEmpty()) {
+            if (nameTextField.getText().trim().isEmpty()) {
                 ajouterButton.setEnabled(false);
             } else {
                 ajouterButton.setEnabled(true);
@@ -120,15 +156,15 @@ public class ActivityForm {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int day = (int)jour.getValue();
-            int month = (int)mois.getValue();
-            int year = (int)annee.getValue();
-            int duree = (int)duration.getValue();
+            int day = (int) jour.getValue();
+            int month = (int) mois.getValue();
+            int year = (int) annee.getValue();
+            int duree = (int) duration.getValue();
             int rpe = rpeSlider.getValue();
 
             Activity newActivity = new Activity(
                     getUserId(),
-                    name.getText(),
+                    nameTextField.getText(),
                     FormatDate(day, month, year),
                     duree,
                     rpe
@@ -160,7 +196,7 @@ public class ActivityForm {
     public void displayActivityData(Activity activity) {
         if (activity != null) {
             // Remplir le nom de l'activité
-            name.setText(activity.getName());
+            nameTextField.setText(activity.getName());
 
             // Remplir la durée de l'activité (assurez-vous que l'objet Activity a une propriété 'duration' correspondante)
             int durationValue = activity.getDuration();
@@ -180,7 +216,7 @@ public class ActivityForm {
         }
     }
 
-    public JPanel getRootPane() {
-        return rootPane;
+    public JPanel getRootPanel() {
+        return rootPanel;
     }
 }

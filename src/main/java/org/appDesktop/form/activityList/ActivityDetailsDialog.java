@@ -1,5 +1,6 @@
 package org.appDesktop.form.activityList;
 
+import org.appDesktop.form.activityForm.ActivityForm;
 import org.appDesktop.model.Activity;
 
 import javax.swing.*;
@@ -12,6 +13,8 @@ public class ActivityDetailsDialog extends JDialog {
     private JButton okButton;
     private JButton updateButton;
 
+    private Activity activity;
+
     public ActivityDetailsDialog(Frame owner, String title, boolean modal, Activity activity) {
         super(owner, title, modal);
         initComponents(activity);
@@ -19,6 +22,7 @@ public class ActivityDetailsDialog extends JDialog {
         attachListeners();
         pack();
         setLocationRelativeTo(owner);
+        this.activity = activity;
     }
 
     private void initComponents(Activity activity) {
@@ -60,7 +64,8 @@ public class ActivityDetailsDialog extends JDialog {
         updateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                ActivityForm activityForm = new ActivityForm(null, "Activity Form", true, activity);
+                activityForm.setVisible(true);
                 dispose();
             }
         });
