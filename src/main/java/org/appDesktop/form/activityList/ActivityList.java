@@ -86,14 +86,11 @@ public class ActivityList {
             rpeLabel = new JLabel();
             loadLabel = new JLabel();
 
-            updateButton.setEnabled(true);
-
             panel.setLayout(new FlowLayout());
             panel.add(nameLabel, BorderLayout.NORTH);
             panel.add(durationLabel, BorderLayout.CENTER);
             panel.add(rpeLabel, BorderLayout.WEST);
             panel.add(loadLabel, BorderLayout.EAST);
-
         }
 
         @Override
