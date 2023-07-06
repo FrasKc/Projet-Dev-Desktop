@@ -18,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.util.Calendar;
 
 import static org.appDesktop.service.DateService.FormatDate;
+import static org.appDesktop.service.UserService.getUserId;
 
 @Getter
 @Slf4j
@@ -31,6 +32,7 @@ public class UserForm {
     private JSpinner spinnerYear;
     private JRadioButton maleRadioButton;
     private JRadioButton femaleRadioButton;
+    private ButtonGroup radioButtonGroup;
     private JButton cancelButton;
     private JButton validateButton;
 
@@ -42,17 +44,32 @@ public class UserForm {
     DatabaseService databaseService;
 
     public UserForm() {
-        spinnerDay.setModel(new SpinnerNumberModel(currentDay, 1, 31, 1));
-        spinnerMonth.setModel(new SpinnerNumberModel(currentMonth, 1, 12, 1));
-        spinnerYear.setModel(new SpinnerNumberModel(currentYear, 1900, currentYear, 1));
-        spinnerYear.setEditor(new JSpinner.NumberEditor(spinnerYear, "#"));
+        initializeForm();
+        initializeFormWithDefaultValue();
+    }
 
+    public UserForm(User user) {
+        initializeForm();
+        initializeFormWithUserValue(user);
+    }
+    public UserForm(String user) {
+        initializeForm();
+        try {
+            databaseService = new DatabaseService();
+            MongoCollection<Document> collection = databaseService.getCollection("user");
+            User r = databaseService.getUserController(collection).getUser(user);
+            initializeFormWithUserValue(r);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public void initializeForm() {
         spinnerMonth.addChangeListener(e -> adjustDaySpinner());
         spinnerYear.addChangeListener(e -> adjustDaySpinner());
+        spinnerYear.setEditor(new JSpinner.NumberEditor(spinnerYear, "#"));
 
-        validateButton.setEnabled(false);
-
-        ButtonGroup radioButtonGroup = new ButtonGroup();
+        radioButtonGroup = new ButtonGroup();
         radioButtonGroup.add(maleRadioButton);
         radioButtonGroup.add(femaleRadioButton);
 
@@ -63,31 +80,35 @@ public class UserForm {
         UserActionListener userActionListener = new UserActionListener();
         maleRadioButton.addActionListener(userActionListener);
         femaleRadioButton.addActionListener(userActionListener);
+    }
 
-        validateButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ButtonModel selectedButtonModel = radioButtonGroup.getSelection();
+    public void initializeFormWithDefaultValue() {
+        spinnerDay.setModel(new SpinnerNumberModel(currentDay, 1, 31, 1));
+        spinnerMonth.setModel(new SpinnerNumberModel(currentMonth, 1, 12, 1));
+        spinnerYear.setModel(new SpinnerNumberModel(currentYear, 1900, currentYear, 1));
 
-                int day = (int)spinnerDay.getValue();
-                int month = (int)spinnerMonth.getValue();
-                int year = (int)spinnerYear.getValue();
-                System.out.println(day +" "+ month +" "+ year);
-                User newUser = new User(
-                        textFirstname.getText(),
-                        textLastname.getText(),
-                        FormatDate(day, month, year),
-                        selectedButtonModel == maleRadioButton.getModel() ? "male" : "female"
-                );
-                try {
-                    databaseService = new DatabaseService();
-                    MongoCollection<Document> collection = databaseService.getCollection("user");
-                    databaseService.getUserController(collection).saveUser(newUser);
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-        });
+        UserValidateActionListener userValidateActionListener = new UserValidateActionListener();
+        validateButton.addActionListener(userValidateActionListener);
+        validateButton.setEnabled(false);
+    }
+
+    public void  initializeFormWithUserValue(User user) {
+        textFirstname.setText(user.getFirstname());
+        textLastname.setText(user.getLastname());
+
+        spinnerDay.setModel(new SpinnerNumberModel(user.getBirthDate().getDayOfMonth(), 1, 31, 1));
+        spinnerMonth.setModel(new SpinnerNumberModel(user.getBirthDate().getMonthValue(), 1, 12, 1));
+        spinnerYear.setModel(new SpinnerNumberModel(user.getBirthDate().getYear(), 1900, currentYear, 1));
+
+        if(user.getGender().equals("male")) {
+            maleRadioButton.setSelected(true);
+        } else {
+            femaleRadioButton.setSelected(true);
+        }
+
+        UpdateUserValidateActionListener updateUserValidateActionListener = new UpdateUserValidateActionListener();
+        validateButton.addActionListener(updateUserValidateActionListener);
+        validateButton.setEnabled(true);
     }
 
     class UserDocumentListener implements DocumentListener {
@@ -130,6 +151,49 @@ public class UserForm {
                 validateButton.setEnabled(false);
             } else {
                 validateButton.setEnabled(true);
+            }
+        }
+    }
+
+    public User getInformationUser() {
+        ButtonModel selectedButtonModel = radioButtonGroup.getSelection();
+
+        int day = (int)spinnerDay.getValue();
+        int month = (int)spinnerMonth.getValue();
+        int year = (int)spinnerYear.getValue();
+
+        return new User(
+                textFirstname.getText(),
+                textLastname.getText(),
+                FormatDate(day, month, year),
+                selectedButtonModel == maleRadioButton.getModel() ? "male" : "female"
+        );
+    }
+
+    class UserValidateActionListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            User newUser = getInformationUser();
+            try {
+                databaseService = new DatabaseService();
+                MongoCollection<Document> collection = databaseService.getCollection("user");
+                databaseService.getUserController(collection).saveUser(newUser);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+
+    class UpdateUserValidateActionListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            User newUser = getInformationUser();
+            try {
+                databaseService = new DatabaseService();
+                MongoCollection<Document> collection = databaseService.getCollection("user");
+                databaseService.getUserController(collection).updateUser(getUserId(), newUser);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
             }
         }
     }
