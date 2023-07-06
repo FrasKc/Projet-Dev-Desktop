@@ -2,6 +2,7 @@ package org.appDesktop.form.activityList;
 
 import com.mongodb.client.MongoCollection;
 import lombok.Getter;
+import org.appDesktop.form.activityForm.ActivityForm;
 import org.appDesktop.model.Activity;
 import org.appDesktop.service.DatabaseService;
 import org.bson.Document;
@@ -85,6 +86,9 @@ public class ActivityList {
             rpeLabel = new JLabel();
             loadLabel = new JLabel();
 
+            updateButton.setEnabled(true);
+
+            panel.setLayout(new FlowLayout());
             panel.add(nameLabel, BorderLayout.NORTH);
             panel.add(durationLabel, BorderLayout.CENTER);
             panel.add(rpeLabel, BorderLayout.WEST);
@@ -95,9 +99,9 @@ public class ActivityList {
         @Override
         public Component getListCellRendererComponent(JList<? extends Activity> list, Activity value, int index, boolean isSelected, boolean cellHasFocus) {
             nameLabel.setText("<html><b>" + value.getName() + "</b></html>");
-            durationLabel.setText("Durée: " + value.getDuration() + " minutes");
-            rpeLabel.setText("RPE: " + value.getRpe());
-            loadLabel.setText("Load: " + value.getLoad());
+            durationLabel.setText("Durée : " + value.getDuration() + " minutes");
+            rpeLabel.setText(" RPE : " + value.getRpe());
+            loadLabel.setText(" Load : " + value.getLoad());
 
             if (isSelected) {
                 panel.setBackground(new Color(63, 63, 63)); // Couleur d'arrière-plan pour les éléments sélectionnés
@@ -112,7 +116,9 @@ public class ActivityList {
     }
 
     private void openUpdateActivityFrame(Activity activity) {
-        // Code pour ouvrir une fenêtre ou un dialogue de mise à jour de l'activité
-        // ...
+        System.out.println("click -1");
+        JPanel testPane = new ActivityForm(activity.get_id()).getRootPane();
+        System.out.println("click");
+        JOptionPane.showMessageDialog(testPane, "test", "Détails de l'activité", JOptionPane.INFORMATION_MESSAGE);
     }
 }

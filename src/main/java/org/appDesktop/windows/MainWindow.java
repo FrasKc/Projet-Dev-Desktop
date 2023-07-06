@@ -9,6 +9,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import static org.appDesktop.service.UserService.getUserId;
+
 public class MainWindow extends JFrame {
     private JPanel mainPanel;
     private JPanel activityPanel;
@@ -19,7 +21,7 @@ public class MainWindow extends JFrame {
     private JButton activityListButton;
 
     public MainWindow() {
-        setTitle("Application de navigation");
+        setTitle("My Foster CalculaaaaaaaTOOOR");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(700, 400);
         setMinimumSize(new Dimension(700, 400));
@@ -27,51 +29,56 @@ public class MainWindow extends JFrame {
         mainPanel = new JPanel();
         mainPanel.setLayout(new CardLayout());
 
-        //activityPanel = new ActivityForm().getRootPane();
-        userPanel = new UserForm().getRootPane();
-        activityListPanel = new ActivityList().getPanel();
+        String userId = getUserId() ;
 
-        mainPanel.add(activityListPanel, "activity-list");
-        mainPanel.add(activityPanel, "activity");
-        mainPanel.add(userPanel, "user");
+        if(userId.isEmpty()) {
+            userPanel = new UserForm().getRootPane();
+            mainPanel.add(userPanel, "user");
+        } else {
+            userPanel = new UserForm(getUserId()).getRootPane();
+            activityPanel = new ActivityForm().getRootPane();
+            activityListPanel = new ActivityList().getPanel();
+
+            mainPanel.add(activityListPanel, "activity-list");
+            mainPanel.add(userPanel, "user");
+            mainPanel.add(activityPanel, "activity");
+
+            userButton = new JButton("Modifier utilisateur");
+            ButtonActionListener buttonUserActionListener = new ButtonActionListener("user");
+            userButton.addActionListener(buttonUserActionListener);
+
+            activityButton = new JButton("Ajouter une activité");
+            ButtonActionListener buttonActivityActionListener = new ButtonActionListener("activity");
+            activityButton.addActionListener(buttonActivityActionListener);
+
+            activityListButton = new JButton("Mes activités");
+            ButtonActionListener buttonActivityListActionListener = new ButtonActionListener("activity-list");
+            activityListButton.addActionListener(buttonActivityListActionListener);
+
+            JPanel buttonPanel = new JPanel();
+            buttonPanel.add(userButton);
+            buttonPanel.add(activityListButton);
+            buttonPanel.add(activityButton);
+
+            getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+        }
 
         getContentPane().add(mainPanel);
 
-        userButton = new JButton("Aller à la page utilisateur");
-        userButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
-                cardLayout.show(mainPanel, "user");
-            }
-        });
-
-        activityButton = new JButton("Aller à la page d'activité");
-        activityButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
-                cardLayout.show(mainPanel, "activity");
-            }
-        });
-
-        activityListButton = new JButton("Aller à la liste d'activités");
-        activityListButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
-                cardLayout.show(mainPanel, "activity-list");
-            }
-        });
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(userButton);
-        buttonPanel.add(activityButton);
-        buttonPanel.add(activityListButton);
-
-        getContentPane().add(buttonPanel, BorderLayout.SOUTH);
-
         setVisible(true);
+    }
+
+    class ButtonActionListener implements ActionListener {
+        String panel;
+
+        ButtonActionListener(String panel) {
+            this.panel= panel;
+        }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
+            cardLayout.show(mainPanel, this.panel);
+        }
     }
 
     public static void main(String[] args) {
