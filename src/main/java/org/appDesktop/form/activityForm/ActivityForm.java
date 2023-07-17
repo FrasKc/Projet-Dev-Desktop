@@ -4,6 +4,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import org.appDesktop.controller.activity.ActivityControllerImpl;
 import org.appDesktop.model.Activity;
+import org.appDesktop.model.User;
 import org.appDesktop.service.DatabaseService;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -35,6 +36,7 @@ public class ActivityForm extends JDialog {
     private JSpinner duration;
     private JSlider rpeSlider;
     private JLabel rpeValue;
+    private String activityID;
 
     public void setDate(LocalDate date) {
         this.date = date;
@@ -49,6 +51,7 @@ public class ActivityForm extends JDialog {
 
     public ActivityForm(Frame owner, String title, boolean modal, Activity activity) {
         super(owner, title, modal);
+        this.activityID = activity.get_id();
         initComponents(activity);
         layoutComponents();
         attachListeners();
@@ -78,8 +81,27 @@ public class ActivityForm extends JDialog {
         ajouterButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                int day = (int) jour.getValue();
+                int month = (int) mois.getValue();
+                int year = (int) annee.getValue();
+                int duree = (int) duration.getValue();
+                int rpe = rpeSlider.getValue();
 
-                dispose();
+                Activity newActivity = new Activity(
+                        getUserId(),
+                        nameTextField.getText(),
+                        FormatDate(day, month, year),
+                        duree,
+                        rpe
+                );
+                try {
+                    databaseService = new DatabaseService();
+                    MongoCollection<Document> collection = databaseService.getCollection("activity");
+                    databaseService.getActivityController(collection).updateActivity(activityID, newActivity);
+
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
     }
@@ -149,6 +171,23 @@ public class ActivityForm extends JDialog {
             } else {
                 ajouterButton.setEnabled(true);
             }
+        }
+
+        public Activity getInformationActivity() {
+            int day = (int) jour.getValue();
+            int month = (int) mois.getValue();
+            int year = (int) annee.getValue();
+            int duree = (int) duration.getValue();
+            int rpe = rpeSlider.getValue();
+
+            Activity newActivity = new Activity(
+                    getUserId(),
+                    nameTextField.getText(),
+                    FormatDate(day, month, year),
+                    duree,
+                    rpe
+            );
+            return newActivity;
         }
     }
 
