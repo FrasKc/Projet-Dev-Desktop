@@ -70,6 +70,11 @@ public class ActivityControllerImpl implements IActivityController {
     }
 
     @Override
+    public List<Activity> getAllActivities() {
+        return this.activityRepository.getAllActivities(this.userId);
+    }
+
+    @Override
     public List<Activity> getAllActivitiesOfTheWeek() {
         return this.activityRepository.getAllActivitiesOfWeek(this.userId, getFirstDayOfTheWeek(), getLastDayOfTheWeek());
     }

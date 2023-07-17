@@ -73,6 +73,18 @@ public class ActivityRepositoryImpl implements IActivityRepository {
     }
 
     @Override
+    public List<Activity> getAllActivities(String userId) {
+        Bson query = Filters.and(
+                Filters.eq("userId", userId)
+        );
+        List<Activity> activities = new ArrayList<Activity>();
+        for (Document document : this.collection.find(query)) {
+            activities.add(documentToActivity(document));
+        }
+        return activities;
+    }
+
+    @Override
     public List<Activity> getAllActivitiesOfWeek(String userId, LocalDate startDateWeek, LocalDate endDateWeek) {
         Bson query = Filters.and(
                 Filters.gte("date", Date.from(startDateWeek.atStartOfDay(ZoneId.systemDefault()).toInstant())),
@@ -80,7 +92,7 @@ public class ActivityRepositoryImpl implements IActivityRepository {
                 Filters.eq("userId", userId)
         );
         List<Activity> activities = new ArrayList<Activity>();
-        for (Document document : this.collection.find()) {
+        for (Document document : this.collection.find(query)) {
             activities.add(documentToActivity(document));
         }
         return activities;

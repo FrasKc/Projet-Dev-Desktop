@@ -26,7 +26,8 @@ public class ActivityDetailsDialog extends JDialog {
     }
 
     private void initComponents(Activity activity) {
-        String details = "ID: " + activity.getUserId() + "\n"
+        String details = "User ID: " + activity.getUserId() + "\n"
+                + "ID: " + activity.get_id() + "\n"
                 + "Nom: " + activity.getName() + "\n"
                 + "Date: " + activity.getDate() + "\n"
                 + "Durée: " + activity.getDuration() + " minutes\n"

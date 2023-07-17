@@ -61,7 +61,7 @@ public class ActivityList {
     private List<Activity> getAllActivities() {
         databaseService = new DatabaseService();
         MongoCollection<Document> collection = databaseService.getCollection("activity");
-        return databaseService.getActivityController(collection).getAllActivitiesOfTheWeek();
+        return databaseService.getActivityController(collection).getAllActivities();
     }
 
     private void showActivityDetails(Activity activity) {

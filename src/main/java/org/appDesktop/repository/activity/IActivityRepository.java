@@ -15,6 +15,8 @@ public interface IActivityRepository {
 
     Activity findById(String activityId);
 
+    List<Activity> getAllActivities(String userId);
+
     List<Activity> getAllActivitiesOfWeek(String userId, LocalDate startDateWeek, LocalDate endDateWeek);
 
     List<Activity> getAllLast28DayActivities(String userId, LocalDate startDay, LocalDate todayDate);
