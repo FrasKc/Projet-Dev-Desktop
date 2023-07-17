@@ -65,12 +65,23 @@ public class ActivityRepositoryImpl implements IActivityRepository {
     public Activity findById(String activityId) {
         Bson filter = Filters.eq("_id", new ObjectId(activityId));
         Document result = this.collection.find(filter).first();
-
         if (result == null) {
             return null;
         }
 
         return documentToActivity(result);
+    }
+
+    @Override
+    public List<Activity> getAllActivities(String userId) {
+        Bson query = Filters.and(
+                Filters.eq("userId", userId)
+        );
+        List<Activity> activities = new ArrayList<Activity>();
+        for (Document document : this.collection.find(query)) {
+            activities.add(documentToActivity(document));
+        }
+        return activities;
     }
 
     @Override
@@ -81,7 +92,7 @@ public class ActivityRepositoryImpl implements IActivityRepository {
                 Filters.eq("userId", userId)
         );
         List<Activity> activities = new ArrayList<Activity>();
-        for (Document document : this.collection.find()) {
+        for (Document document : this.collection.find(query)) {
             activities.add(documentToActivity(document));
         }
         return activities;

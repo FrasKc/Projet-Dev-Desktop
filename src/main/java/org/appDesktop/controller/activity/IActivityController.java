@@ -10,10 +10,13 @@ public interface IActivityController {
 
     void deleteActivity(String id) throws Exception;
 
+    Activity findActivityById(String activityId);
+
     void updateActivity(String activityId, Activity activityUpdated) throws Exception;
 
     double calculateLoad(int duration, int rpe);
     boolean verifActivityValue(Activity activity);
+    List<Activity> getAllActivities();
     List<Activity> getAllActivitiesOfTheWeek();
     List<Activity> getAllLast28DayActivities();
 }

@@ -70,6 +70,11 @@ public class ActivityControllerImpl implements IActivityController {
     }
 
     @Override
+    public List<Activity> getAllActivities() {
+        return this.activityRepository.getAllActivities(this.userId);
+    }
+
+    @Override
     public List<Activity> getAllActivitiesOfTheWeek() {
         return this.activityRepository.getAllActivitiesOfWeek(this.userId, getFirstDayOfTheWeek(), getLastDayOfTheWeek());
     }
@@ -77,5 +82,10 @@ public class ActivityControllerImpl implements IActivityController {
     @Override
     public List<Activity> getAllLast28DayActivities(){
         return this.activityRepository.getAllLast28DayActivities(this.userId, getLast28Day(), getTodayDate());
+    }
+
+    @Override
+    public Activity findActivityById(String activityId) {
+        return this.activityRepository.findById(activityId);
     }
 }
