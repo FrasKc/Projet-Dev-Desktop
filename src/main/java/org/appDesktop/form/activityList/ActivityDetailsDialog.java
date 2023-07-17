@@ -1,7 +1,10 @@
 package org.appDesktop.form.activityList;
 
+import com.mongodb.client.MongoCollection;
 import org.appDesktop.form.activityForm.ActivityForm;
 import org.appDesktop.model.Activity;
+import org.appDesktop.service.DatabaseService;
+import org.bson.Document;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +16,11 @@ public class ActivityDetailsDialog extends JDialog {
     private JButton okButton;
     private JButton updateButton;
 
+    private  JButton deleteButton;
+
     private Activity activity;
+
+    private DatabaseService databaseService;
 
     public ActivityDetailsDialog(Frame owner, String title, boolean modal, Activity activity) {
         super(owner, title, modal);
@@ -39,6 +46,7 @@ public class ActivityDetailsDialog extends JDialog {
 
         okButton = new JButton("OK");
         updateButton = new JButton("Update");
+        deleteButton = new JButton("Delete");
     }
 
     private void layoutComponents() {
@@ -47,14 +55,29 @@ public class ActivityDetailsDialog extends JDialog {
         contentPane.add(new JScrollPane(detailsTextArea), BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(deleteButton);
         buttonPanel.add(updateButton);
         buttonPanel.add(okButton);
-
         contentPane.add(buttonPanel, BorderLayout.SOUTH);
         setContentPane(contentPane);
     }
 
     private void attachListeners() {
+
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    databaseService = new DatabaseService();
+                    MongoCollection<Document> collection = databaseService.getCollection("activity");
+                    databaseService.getActivityController(collection).deleteActivity(activity.get_id());
+
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+                dispose();
+            }
+        });
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
